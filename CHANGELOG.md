@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.2](https://github.com/AtaCanYmc/RubberOrca/compare/rubber-orca-v0.1.1...rubber-orca-v0.1.2) (2026-11-21)
+
+
+### Features
+
+* add BLE passkey bonding and USB keyboard layout support ([a011647](https://github.com/AtaCanYmc/RubberOrca/commit/a0116476f5999ca489f8a1b9eb7bb2702e2a6750))
+* add CLI and MCP reference documentation for rubberorca ([311e242](https://github.com/AtaCanYmc/RubberOrca/commit/311e242d085e075f073af00cc81a8f200690dde1))
+* add MCP server for RubberOrca with JSON-RPC 2.0 support ([6d4c3d3](https://github.com/AtaCanYmc/RubberOrca/commit/6d4c3d3c6832012e356f39b5071d3f3036ab765a))
+* implement CLI for RubberOrca with command parsing and BLE/USB support ([99419b6](https://github.com/AtaCanYmc/RubberOrca/commit/99419b636063bfd9f0dd10951bf7a15bb7f3a5ec))
+
 ## [0.1.1](https://github.com/AtaCanYmc/RubberOrca/compare/rubber-orca-v0.1.0...rubber-orca-v0.1.1) (2026-11-21)
 
 
