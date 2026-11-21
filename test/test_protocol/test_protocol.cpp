@@ -210,6 +210,46 @@ void test_press_modifier_and_combo() {
   TEST_ASSERT_EQUAL_INT(1, mock.releaseAllCount);
 }
 
+void test_security_bounds_and_sanitization() {
+  // Oversized delay rejected
+  feedFrame(buildFrame(VERSION, 20, "delay 999999"));
+  assertAck(20, 0, 1);
+  TEST_ASSERT_EQUAL_UINT32(0, mock.totalDelayMs);
+
+  // Oversized press duration rejected
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 21, "press shift 9999"));
+  assertAck(21, 0, 1);
+  TEST_ASSERT_TRUE(mock.keysPressed.empty());
+
+  // Oversized vibrate rejected
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 22, "vibrate 60000"));
+  assertAck(22, 0, 1);
+  TEST_ASSERT_EQUAL_UINT16(0, mock.lastVibrateMs);
+
+  // Mouse move clamped to [-127, 127]
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 23, "mouse move 200 -300"));
+  assertAck(23, 1, 0);
+  TEST_ASSERT_EQUAL_INT8(127, mock.mouseMoves[0].first);
+  TEST_ASSERT_EQUAL_INT8(-127, mock.mouseMoves[0].second);
+
+  // BLE name rejects control chars and oversized names
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 24, std::string("ble name \"bad\x07name\"")));
+  assertAck(24, 0, 1);
+  TEST_ASSERT_TRUE(mock.bleName.empty());
+
+  // Self-recursive macro stops cleanly at MAX_MACRO_DEPTH (2)
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 25, "macro define m0 { macro run m0 }"));
+  assertAck(25, 1, 0);
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 26, "macro run m0"));
+  assertAck(26, 0, 1);
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_valid_type_frame_and_escapes);
@@ -221,5 +261,6 @@ int main() {
   RUN_TEST(test_macro_define_and_run_expanded_slot);
   RUN_TEST(test_ble_name_and_jiggler_poll);
   RUN_TEST(test_press_modifier_and_combo);
+  RUN_TEST(test_security_bounds_and_sanitization);
   return UNITY_END();
 }

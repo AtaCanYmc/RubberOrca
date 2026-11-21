@@ -87,7 +87,7 @@ The device replies with a 6-byte ACK frame `[0x02, 0x01, SEQ, OK, CODE, 0x03]` o
 | `mouse scroll` | `<amount>` | Scrolls the vertical wheel by a signed 8-bit delta. |
 | `jiggler` | `on\|off\|toggle` | Toggles a 20 px square return-to-origin mouse pulse every 5000 ms. |
 | `macro define` | `m0..m15 { body }` | Persists a command chain in ESP32 NVS under namespace `orca`. |
-| `macro run` | `m0..m15` | Executes a stored NVS macro with recursion depth capped at 4. |
+| `macro run` | `m0..m15` | Executes a stored NVS macro with recursion depth capped at 2. |
 | `ble name` | `"name"` | Updates BLE advertising name and persists it in NVS across reboots. |
 | `vibrate` | `<ms>` | Pulses `VIB_PIN` if defined at compile time. No-op otherwise. |
 | `help`, `?` | None | Prints the command list to BLE and USB CDC. |

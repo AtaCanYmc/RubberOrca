@@ -9,7 +9,17 @@
 namespace {
 
 constexpr uint32_t JIGGLE_INTERVAL_MS = 5000;
-constexpr uint8_t MAX_MACRO_DEPTH = 4;
+constexpr uint8_t MAX_MACRO_DEPTH = 2;
+constexpr int MAX_DELAY_MS = 30000;
+constexpr int MAX_PRESS_MS = 5000;
+constexpr int MAX_VIBRATE_MS = 5000;
+constexpr size_t MAX_BLE_NAME_LEN = 29;
+
+int8_t clamp_i8(int v) {
+  if (v < -127) return -127;
+  if (v > 127) return 127;
+  return static_cast<int8_t>(v);
+}
 
 bool jigglerActive = false;
 uint32_t lastJiggleMs = 0;
@@ -102,7 +112,8 @@ bool press_modifier_cmd(const char* args) {
     }
     if (allDigits) {
       int parsed = parse_int(tail);
-      if (parsed > 0) ms = static_cast<uint16_t>(parsed);
+      if (parsed <= 0 || parsed > MAX_PRESS_MS) return false;
+      ms = static_cast<uint16_t>(parsed);
       *lastSpace = '\0';
       s = trim_inplace(s);
     }
@@ -170,18 +181,22 @@ bool execute_single(char* s, uint8_t depth) {
     while (*p && isspace((unsigned char)*p)) p++;
     if (*p != '"') return false;
     p++;
-    char nameBuf[32];
+    char nameBuf[MAX_BLE_NAME_LEN + 1];
     size_t ni = 0;
-    while (*p && *p != '"' && ni < sizeof(nameBuf) - 1) nameBuf[ni++] = *p++;
+    while (*p && *p != '"' && ni < MAX_BLE_NAME_LEN) {
+      unsigned char ch = static_cast<unsigned char>(*p++);
+      if (ch < 0x20 || ch > 0x7E) return false;
+      nameBuf[ni++] = static_cast<char>(ch);
+    }
+    if (*p != '"' || ni == 0) return false;
     nameBuf[ni] = '\0';
-    if (ni == 0) return false;
     backend_set_ble_name(nameBuf);
     return true;
   }
 
   if (strncmp(s, "type \"", 6) == 0) {
     char* p = s + 6;
-    char outBuf[PAYLOAD_MAX + 1];
+    static char outBuf[PAYLOAD_MAX + 1];
     size_t oi = 0;
     while (*p && oi < PAYLOAD_MAX) {
       if (*p == '\\' && p[1] != '\0') {
@@ -204,7 +219,7 @@ bool execute_single(char* s, uint8_t depth) {
 
   if (strncmp(s, "delay ", 6) == 0) {
     int d = parse_int(s + 6);
-    if (d <= 0) return false;
+    if (d <= 0 || d > MAX_DELAY_MS) return false;
     backend_delay_ms(static_cast<uint32_t>(d));
     return true;
   }
@@ -233,7 +248,7 @@ bool execute_single(char* s, uint8_t depth) {
 
   if (strncmp(s, "vibrate ", 8) == 0) {
     int ms = parse_int(s + 8);
-    if (ms < 0) return false;
+    if (ms < 0 || ms > MAX_VIBRATE_MS) return false;
     backend_vibrate(static_cast<uint16_t>(ms));
     return true;
   }
@@ -249,7 +264,7 @@ bool execute_single(char* s, uint8_t depth) {
     while (*p && !isspace((unsigned char)*p)) p++;
     while (*p && isspace((unsigned char)*p)) p++;
     int dy = parse_int(p);
-    backend_mouse_move(static_cast<int8_t>(dx), static_cast<int8_t>(dy));
+    backend_mouse_move(clamp_i8(dx), clamp_i8(dy));
     return true;
   }
 
@@ -263,7 +278,7 @@ bool execute_single(char* s, uint8_t depth) {
 
   if (strncmp(s, "mouse scroll ", 13) == 0) {
     int amount = parse_int(s + 13);
-    backend_mouse_scroll(static_cast<int8_t>(amount));
+    backend_mouse_scroll(clamp_i8(amount));
     return true;
   }
 
@@ -285,7 +300,7 @@ bool execute_single(char* s, uint8_t depth) {
     if (!brace || !endb || endb <= brace) return false;
     size_t len = static_cast<size_t>(endb - brace - 1);
     if (len >= MACRO_SLOT_SIZE) len = MACRO_SLOT_SIZE - 1;
-    char body[MACRO_SLOT_SIZE];
+    static char body[MACRO_SLOT_SIZE];
     memcpy(body, brace + 1, len);
     body[len] = '\0';
     backend_macro_save(slot, trim_inplace(body));
