@@ -1,4 +1,4 @@
-.PHONY: help test build build-all build-supermini build-n16r8 \
+.PHONY: help test test-native test-cli install-cli build build-all build-supermini build-n16r8 \
         flash-supermini flash-n16r8 monitor erase-supermini erase-n16r8 \
         devices size package lint-docs check clean
 
@@ -15,7 +15,10 @@ help:
 	@echo "RubberOrca (ESP32-S3) Build and Operations"
 	@echo ""
 	@echo "Build and Test:"
-	@echo "  make test              Run host-side Unity protocol/command tests (native)"
+	@echo "  make test              Run native C++ and Python CLI unit tests"
+	@echo "  make test-native       Run host-side Unity protocol/command tests (native)"
+	@echo "  make test-cli          Run Python CLI unit tests"
+	@echo "  make install-cli       Install rubberorca Python CLI in editable mode"
 	@echo "  make build             Build firmware for both ESP32-S3 targets"
 	@echo "  make build-supermini   Build ESP32-S3 Super Mini firmware"
 	@echo "  make build-n16r8       Build ESP32-S3 N16R8 DevKitC firmware"
@@ -35,8 +38,16 @@ help:
 	@echo "  make check             Run full local CI suite (test + build + lint-docs)"
 	@echo "  make clean             Remove PlatformIO build cache and $(DIST_DIR)/"
 
-test:
+test-native:
 	$(PIO) test -e native
+
+test-cli:
+	$(PYTHON) -m unittest discover -s cli/tests -v
+
+test: test-native test-cli
+
+install-cli:
+	$(PYTHON) -m pip install -e ./cli
 
 build-supermini:
 	$(PIO) run -e esp32s3_supermini
