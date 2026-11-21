@@ -1,0 +1,60 @@
+name: Bug Report
+description: Report a reproducible firmware, protocol, or hardware issue
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Verify the issue has not been reported before opening a new ticket.
+        For security vulnerability reports, refer to [SECURITY.md](../../SECURITY.md).
+  - type: textarea
+    id: summary
+    attributes:
+      label: Bug Description
+      description: Provide a concise description of the defect.
+      placeholder: Describe what happened.
+    validations:
+      required: true
+  - type: dropdown
+    id: board
+    attributes:
+      label: Target Board
+      options:
+        - ESP32-S3 Super Mini (esp32s3_supermini)
+        - ESP32-S3 N16R8 DevKitC (esp32s3_n16r8)
+        - Native host test runner (native)
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Step-by-step instructions to reproduce the behavior.
+      placeholder: |
+        1. Flash environment '...'
+        2. Send command or BLE packet '...'
+        3. Observe behavior '...'
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: State what should have happened.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or Serial Output
+      description: Paste relevant build output, serial monitor logs, or BLE client traces.
+      render: shell
+  - type: input
+    id: environment
+    attributes:
+      label: Host Environment
+      description: Host OS, PlatformIO version, and client used (Web PWA, Python CLI, etc.).
+      placeholder: macOS 15, PlatformIO 6.1, RubberOtter CLI
+    validations:
+      required: true

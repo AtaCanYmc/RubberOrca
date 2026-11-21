@@ -1,0 +1,39 @@
+name: Feature Request
+description: Propose a new firmware capability, board target, or protocol extension
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check existing issues and [ROADMAP.md](../../ROADMAP.md) before opening a proposal.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Describe the technical limitation this proposal resolves.
+      placeholder: When using RubberOrca on...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: Detail the requested firmware behavior, protocol change, or board support.
+      placeholder: Add support for...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: List alternative approaches or trade-offs considered.
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Contributor Checklist
+      options:
+        - label: I checked existing issues, PRs, and ROADMAP.md before submitting.
+          required: true
+        - label: This proposal preserves RubberOtter v1 client compatibility or documents breaking changes.
+          required: true

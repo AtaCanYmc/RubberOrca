@@ -1,0 +1,35 @@
+# Auto detect text files and perform LF normalization on checkout
+* text=auto eol=lf
+
+# Explicit shell script normalization
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+
+# C/C++ and PlatformIO sources
+*.c text
+*.cpp text
+*.h text
+*.hpp text
+*.ini text
+
+# Documentation and structured data
+*.md text diff=markdown
+*.json text
+*.yml text
+*.yaml text
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text
+*.pdf binary
+*.bin binary
+
+# Release archive exclusions
+.github export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
