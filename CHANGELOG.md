@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.4](https://github.com/AtaCanYmc/RubberOrca/compare/rubber-orca-v0.1.3...rubber-orca-v0.1.4) (2026-11-21)
+
+
+### Features
+
+* add hardware verification checklist for ESP32-S3 Super Mini and N16R8 DevKitC ([52e5c90](https://github.com/AtaCanYmc/RubberOrca/commit/52e5c90734e443ae48891d3ddcb6746fb42cd242))
+* add PyPI and Homebrew badges to README for improved visibility ([29aaa78](https://github.com/AtaCanYmc/RubberOrca/commit/29aaa7815119f4e11336bb84d76489fca2173dd5))
+* implement LittleFS script storage and on-demand Wi-Fi Workstation with authenticated OTA ([34d2152](https://github.com/AtaCanYmc/RubberOrca/commit/34d2152e4e34e4d31f6b68de8e25903319ff1906))
+* update installation instructions for Homebrew and PyPI in documentation ([35a9556](https://github.com/AtaCanYmc/RubberOrca/commit/35a9556089f464dad026f12c97a2eefef23842a1))
+
 ## [0.1.3](https://github.com/AtaCanYmc/RubberOrca/compare/rubber-orca-v0.1.2...rubber-orca-v0.1.3) (2026-11-21)
 
 
