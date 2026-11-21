@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="assets/logo.png" alt="RubberOrca Logo" width="180" />
+</div>
+
 # RubberOrca
 
 [![CI](https://github.com/AtaCanYmc/RubberOrca/actions/workflows/ci.yml/badge.svg)](https://github.com/AtaCanYmc/RubberOrca/actions/workflows/ci.yml)
@@ -94,6 +98,8 @@ Commands can be chained with `&&` or `;`. Separators inside quoted strings and `
 
 ```text
 RubberOrca/
+├── assets/
+│   └── logo.png                # Square project emblem
 ├── include/
 │   ├── Backend.h               # Hardware-agnostic HID, transport, and NVS callbacks
 │   └── Protocol.h              # Framing constants, buffer sizes, and BLE UUIDs
@@ -107,7 +113,10 @@ RubberOrca/
 ├── test/
 │   └── test_protocol/
 │       └── test_protocol.cpp   # Unity host unit tests for framing and commands
+├── Makefile                    # Build, test, flash, package, and lint targets
 ├── platformio.ini              # Super Mini, N16R8, and native test environments
+├── release-please-config.json  # Automated semantic versioning configuration
+├── version.txt                 # Current firmware release version
 ├── CONTRIBUTING.md
 ├── ROADMAP.md
 ├── SECURITY.md
