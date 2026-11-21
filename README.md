@@ -6,6 +6,8 @@
 
 [![CI](https://github.com/AtaCanYmc/RubberOrca/actions/workflows/ci.yml/badge.svg)](https://github.com/AtaCanYmc/RubberOrca/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/AtaCanYmc/RubberOrca?include_prereleases&sort=semver)](https://github.com/AtaCanYmc/RubberOrca/releases)
+[![PyPI](https://img.shields.io/pypi/v/rubberorca.svg)](https://pypi.org/project/rubberorca/)
+[![Homebrew](https://img.shields.io/badge/Homebrew-AtaCanYmc%2Ftap%2Frubberorca-FBB040.svg)](https://github.com/AtaCanYmc/homebrew-tap)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![MCU](https://img.shields.io/badge/MCU-ESP32--S3-E7352C.svg)](docs/hardware.md)
 [![PlatformIO](https://img.shields.io/badge/PlatformIO-55.03.311-FF7F00.svg)](platformio.ini)
