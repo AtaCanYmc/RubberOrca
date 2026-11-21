@@ -148,3 +148,89 @@ runSimBtn.addEventListener("click", async () => {
 });
 
 renderPreset(activePreset);
+
+// 6. CLI / MCP / Python SDK Usage Tabs + Copy
+const USAGE_SNIPPETS = {
+  cli: {
+    code: `# Install unified package (SDK + CLI + MCP)
+pip install rubberorca
+
+# Discover BLE 0xFFE0 devices and USB serial ports
+rubberorca scan
+
+# Send commands over BLE (default) or USB CDC (--port)
+rubberorca type "hello from RubberOrca"
+rubberorca key enter
+rubberorca layout tr_q
+rubberorca ble-passkey 482913
+rubberorca macro define m0 'type "git status" && enter'
+rubberorca macro run m0
+rubberorca jiggler toggle`,
+    meta: "Use --port /dev/cu.usbmodem1101 or --address <BLE_UUID> to target a specific board."
+  },
+  mcp: {
+    code: `// Add to Claude Desktop, Cursor, or Antigravity mcp_config.json
+{
+  "mcpServers": {
+    "rubberorca": {
+      "command": "uvx",
+      "args": ["--from", "rubberorca", "rubberorca-mcp"]
+    }
+  }
+}
+
+// Exposed stdio JSON-RPC 2.0 tools:
+// scan_devices, type_text, press_key, media_control,
+// mouse_action, jiggler, macro_define, macro_run, send_command`,
+    meta: "Pass --port or set RUBBERORCA_PORT / RUBBERORCA_ADDRESS env vars to pin a device."
+  },
+  sdk: {
+    code: `from rubberorca import RubberOrca
+
+# Auto-discovers BLE 0xFFE0 (or pass port="/dev/cu.usbmodem1101")
+orca = RubberOrca(timeout=3.0)
+
+orca.set_layout("tr_q")
+orca.type("Merhaba İstanbul @orca")
+orca.key("enter")
+orca.media("play_pause")
+orca.mouse_move(40, -20)
+orca.jiggler("toggle")`,
+    meta: "Zero extra framework dependencies — built on bleak and pyserial."
+  }
+};
+
+let activeUsage = "cli";
+const usageCode = document.getElementById("usageCode");
+const usageMeta = document.getElementById("usageMeta");
+const copyUsageBtn = document.getElementById("copyUsageBtn");
+
+function renderUsage(key) {
+  activeUsage = key;
+  usageCode.textContent = USAGE_SNIPPETS[key].code;
+  usageMeta.textContent = USAGE_SNIPPETS[key].meta;
+  document.querySelectorAll("#usageTabs .preset-btn").forEach((b) => {
+    const active = b.dataset.usage === key;
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-selected", String(active));
+  });
+}
+
+document.getElementById("usageTabs").addEventListener("click", (e) => {
+  const btn = e.target.closest(".preset-btn");
+  if (btn) renderUsage(btn.dataset.usage);
+});
+
+copyUsageBtn.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(USAGE_SNIPPETS[activeUsage].code);
+    copyUsageBtn.textContent = "COPIED";
+    setTimeout(() => {
+      copyUsageBtn.textContent = "COPY";
+    }, 1500);
+  } catch {
+    copyUsageBtn.textContent = "FAILED";
+  }
+});
+
+renderUsage(activeUsage);

@@ -648,6 +648,60 @@ body {
   color: var(--accent);
 }
 
+/* CLI / MCP / SDK USAGE */
+.code-shell {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 24px;
+}
+
+.code-tabs-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.code-tabs-bar .sim-presets {
+  margin-bottom: 0;
+}
+
+.copy-btn {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  padding: 7px 12px;
+  font-size: 0.72rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.copy-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.usage-code {
+  margin-bottom: 14px;
+  min-height: 210px;
+}
+
+.usage-meta {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.usage-meta code {
+  color: var(--text);
+  background: var(--surface-2);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
 /* FOOTER */
 .footer {
   border-top: 1px solid var(--border);

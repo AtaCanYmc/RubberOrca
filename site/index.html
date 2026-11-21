@@ -3,8 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RubberOrca — ESP32-S3 Native USB HID Bridge</title>
-  <meta name="description" content="Browser-based firmware flasher and technical specification for RubberOrca on ESP32-S3 (Super Mini and N16R8)." />
+  <title>RubberOrca — ESP32-S3 Native USB HID &amp; BLE 5.0 Web Flasher</title>
+  <meta name="description" content="Open-source ESP32-S3 firmware, Web Serial browser flasher, Python SDK, CLI, and MCP server for wired USB-OTG HID automation controlled over BLE 5.0 GATT." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#09090b" />
+  <link rel="canonical" href="https://atacanymc.github.io/RubberOrca/" />
+
+  <link rel="icon" type="image/png" href="./logo.png" />
+  <link rel="apple-touch-icon" href="./logo.png" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="RubberOrca" />
+  <meta property="og:url" content="https://atacanymc.github.io/RubberOrca/" />
+  <meta property="og:title" content="RubberOrca — ESP32-S3 Native USB HID &amp; BLE 5.0 Web Flasher" />
+  <meta property="og:description" content="Flash RubberOrca to ESP32-S3 Super Mini or N16R8 straight from your browser. Wired USB-OTG HID Keyboard, Mouse, and Consumer Control over BLE 5.0 GATT." />
+  <meta property="og:image" content="https://atacanymc.github.io/RubberOrca/logo.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="RubberOrca stylized orca PCB emblem" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="RubberOrca — ESP32-S3 Native USB HID &amp; BLE 5.0 Web Flasher" />
+  <meta name="twitter:description" content="Single-chip ESP32-S3 USB-OTG HID firmware, browser Web Serial flasher, Python SDK, CLI, and MCP server." />
+  <meta name="twitter:image" content="https://atacanymc.github.io/RubberOrca/logo.png" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "RubberOrca",
+    "url": "https://atacanymc.github.io/RubberOrca/",
+    "image": "https://atacanymc.github.io/RubberOrca/logo.png",
+    "description": "Single-chip ESP32-S3 firmware exposing native TinyUSB composite HID (keyboard, mouse, consumer control) controlled over BLE 5.0 GATT 0xFFE0/0xFFE1 and USB CDC Serial, with Python SDK, CLI, and stdio MCP server.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "ESP32-S3, macOS, Linux, Windows",
+    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+    "codeRepository": "https://github.com/AtaCanYmc/RubberOrca",
+    "author": {
+      "@type": "Person",
+      "name": "AtaCanYmc",
+      "url": "https://github.com/AtaCanYmc"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,11 +72,12 @@
         <span class="mono tag" id="releaseTag">v0.1.0</span>
       </a>
 
-      <nav class="nav-links mono">
+      <nav class="nav-links mono" aria-label="Primary">
         <a href="#flash">01_FLASH</a>
         <a href="#architecture">02_SPECS</a>
         <a href="#simulator">03_SIMULATOR</a>
-        <a href="https://github.com/AtaCanYmc/RubberOrca" target="_blank" rel="noreferrer" class="nav-ext">
+        <a href="#ecosystem">04_CLI/MCP</a>
+        <a href="https://github.com/AtaCanYmc/RubberOrca" target="_blank" rel="noopener noreferrer" class="nav-ext">
           GITHUB ↗
         </a>
       </nav>
@@ -296,17 +343,47 @@
         </div>
       </div>
     </section>
+
+    <!-- CLI, MCP & PYTHON SDK -->
+    <section class="section container" id="ecosystem">
+      <div class="section-head">
+        <span class="mono section-index">04 // CLI, MCP &amp; PYTHON SDK</span>
+        <h2>Control from terminal, scripts, or AI agents.</h2>
+      </div>
+
+      <div class="code-shell">
+        <div class="code-tabs-bar">
+          <div class="sim-presets" id="usageTabs" role="tablist" aria-label="Client Interface">
+            <button type="button" class="preset-btn active mono" role="tab" aria-selected="true" data-usage="cli">CLI // rubberorca</button>
+            <button type="button" class="preset-btn mono" role="tab" aria-selected="false" data-usage="mcp">MCP // rubberorca-mcp</button>
+            <button type="button" class="preset-btn mono" role="tab" aria-selected="false" data-usage="sdk">PYTHON SDK</button>
+          </div>
+          <button type="button" class="copy-btn mono" id="copyUsageBtn">COPY</button>
+        </div>
+
+        <pre class="sim-code mono usage-code" id="usageCode"></pre>
+
+        <div class="usage-meta mono" id="usageMeta">
+          Install once via <code>pip install rubberorca</code> — ships CLI, stdio MCP server, and Python SDK.
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer container mono">
     <div>RUBBERORCA // OPEN-SOURCE HARDWARE BRIDGE</div>
     <div class="footer-links">
-      <a href="https://github.com/AtaCanYmc/RubberOrca" target="_blank" rel="noreferrer">REPOSITORY</a>
-      <a href="https://github.com/AtaCanYmc/RubberOrca/releases" target="_blank" rel="noreferrer">RELEASES</a>
-      <a href="https://github.com/AtaCanYmc/RubberOrca/issues" target="_blank" rel="noreferrer">ISSUES</a>
+      <a href="https://github.com/AtaCanYmc/RubberOrca" target="_blank" rel="noopener noreferrer">REPOSITORY</a>
+      <a href="https://github.com/AtaCanYmc/RubberOrca/releases" target="_blank" rel="noopener noreferrer">RELEASES</a>
+      <a href="https://github.com/AtaCanYmc/RubberOrca/issues" target="_blank" rel="noopener noreferrer">ISSUES</a>
+      <a href="./llms.txt">LLMS.TXT</a>
     </div>
   </footer>
 
-  <script src="./app.js"></script>
+  <noscript>
+    <p class="container mono browser-warn">JavaScript is required for Web Serial flashing and the live simulator. Install via CLI: pip install rubberorca</p>
+  </noscript>
+
+  <script src="./app.js" defer></script>
 </body>
 </html>
