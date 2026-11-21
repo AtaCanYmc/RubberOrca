@@ -16,6 +16,25 @@
         {
           "type": "generic",
           "path": "python/rubberorca/__init__.py"
+        },
+        {
+          "type": "generic",
+          "path": "site/index.html"
+        },
+        {
+          "type": "json",
+          "path": "site/manifest.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": "site/manifest-supermini.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": "site/manifest-n16r8.json",
+          "jsonpath": "$.version"
         }
       ],
       "changelog-sections": [
