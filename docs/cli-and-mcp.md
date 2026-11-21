@@ -17,10 +17,46 @@ flowchart LR
 ## Installation
 
 ```bash
+pip install rubberorca
+# Or editable from source:
 pip install -e ./python
 ```
 
 Requires Python 3.9 or newer. Runtime dependencies are `bleak` and `pyserial`.
+
+## Python SDK (`RubberOrca`)
+
+```python
+from rubberorca import RubberOrca
+
+# Auto-discover over BLE 0xFFE0 (or pass port="/dev/cu.usbmodem1101" / address="...")
+orca = RubberOrca(timeout=3.0)
+orca.type("hello from RubberOrca")
+orca.key("enter")
+orca.set_layout("tr_q")
+orca.set_ble_passkey(482913)
+orca.jiggler("toggle")
+```
+
+| Method | Arguments | Behavior |
+| :--- | :--- | :--- |
+| `RubberOrca.scan(timeout=4.0)` | Optional timeout | Returns `{"ble": [...], "serial": [...]}` device lists. |
+| `send(command)` | Raw string | Sends any command or `&&` / `;` chain and returns `Ack`. |
+| `raw_byte(value)` | `0x10`..`0x8F` | Sends single-byte fallback without ACK. |
+| `type(text)` | String | Escapes quotes/newlines/tabs and sends `type "..."`. |
+| `delay(ms)` | `1`..`30000` | Pauses execution on device. |
+| `key(name)` | `enter\|tab\|backspace` | Sends single keystroke. |
+| `press(mod, ms=None)` | Modifier/combo, optional ms | Sends modifier or shortcut combo (`1`..`5000` ms). |
+| `media(action)` | Media key name | Sends Consumer Control media key. |
+| `mouse_move(dx, dy)` | Signed ints | Relative pointer movement (clamped to `[-127, 127]`). |
+| `mouse_click(button="left")` | `left\|right\|middle` | Clicks mouse button. |
+| `mouse_scroll(amount)` | Signed int | Scrolls vertical wheel (clamped to `[-127, 127]`). |
+| `jiggler(state="toggle")` | `on\|off\|toggle` | Controls mouse jiggler. |
+| `macro_define(slot, body)` | `m0`..`m15`, string | Saves macro in ESP32 NVS. |
+| `macro_run(slot)` | `m0`..`m15` | Executes stored NVS macro. |
+| `set_ble_name(name)` | 1..29 printable ASCII | Persists BLE advertising name in NVS. |
+| `set_ble_passkey(passkey)` | `100000`..`999999` or `"off"` | Configures BLE bonding passkey in NVS. |
+| `set_layout(layout)` | `"us"` or `"tr_q"` | Persists active keyboard layout in NVS. |
 
 ## CLI (`rubberorca`)
 
@@ -124,6 +160,10 @@ Pinned USB CDC Serial device:
   }
 }
 ```
+
+## Publishing to PyPI
+
+Releases are automated via `.github/workflows/release-please.yml` using PyPI Trusted Publishing (`environment: pypi`, `id-token: write`). When Release Please cuts a GitHub Release, CI syncs `python/pyproject.toml` and `python/rubberorca/__init__.py`, runs `python/tests`, builds `python/dist/`, and publishes `rubberorca` to PyPI.
 
 ## Verification
 
