@@ -2,7 +2,7 @@
 
 # CLI and MCP Reference
 
-The `cli/` package ships two console entry points sharing `rubberorca.protocol` and `rubberorca.transport`: `rubberorca` for terminal automation and `rubberorca-mcp` for AI agent tool execution over stdio JSON-RPC 2.0.
+The `python/` package ships a Python SDK (`RubberOrca`) and two console entry points sharing `rubberorca.protocol` and `rubberorca.transport`: `rubberorca` for terminal automation and `rubberorca-mcp` for AI agent tool execution over stdio JSON-RPC 2.0.
 
 ```mermaid
 flowchart LR
@@ -17,7 +17,7 @@ flowchart LR
 ## Installation
 
 ```bash
-pip install -e ./cli
+pip install -e ./python
 ```
 
 Requires Python 3.9 or newer. Runtime dependencies are `bleak` and `pyserial`.
@@ -128,5 +128,5 @@ Pinned USB CDC Serial device:
 ## Verification
 
 ```bash
-make test-cli
+make test-python
 ```

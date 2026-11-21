@@ -13,7 +13,9 @@ from .protocol import (
     parse_ack,
 )
 
-__version__ = "0.1.0"
+from .sdk import RubberOrca
+
+__version__ = "0.1.0"  # x-release-please-version
 __all__ = [
     "ACK_LEN",
     "Ack",
@@ -21,6 +23,7 @@ __all__ = [
     "ETX",
     "PAYLOAD_MAX",
     "ProtocolError",
+    "RubberOrca",
     "SERVICE_UUID",
     "STX",
     "VERSION",

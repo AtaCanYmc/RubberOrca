@@ -1,13 +1,27 @@
 [Back to Root README](../README.md)
 
-# RubberOrca CLI
+# RubberOrca Python SDK, CLI, and MCP Server
 
-Python command-line client for RubberOrca over BLE 5.0 GATT (`0xFFE0` / `0xFFE1`) and USB CDC Serial.
+Unified Python package (`rubberorca`) providing a Python SDK, `rubberorca` CLI, and `rubberorca-mcp` stdio MCP server over BLE 5.0 GATT (`0xFFE0` / `0xFFE1`) and USB CDC Serial.
 
 ## Installation
 
 ```bash
-pip install -e ./cli
+pip install rubberorca
+# Or editable from source:
+pip install -e ./python
+```
+
+## Python SDK
+
+```python
+from rubberorca import RubberOrca
+
+orca = RubberOrca()  # Auto-discovers BLE 0xFFE0 (or pass port="/dev/cu.usbmodem1101")
+orca.type("hello from RubberOrca")
+orca.key("enter")
+orca.set_layout("tr_q")
+orca.jiggler("toggle")
 ```
 
 ## Usage
@@ -53,5 +67,5 @@ Pass `--port /dev/cu.usbmodem1101` or `--address <BLE_ADDR>` in `args` (or set `
 ## Testing
 
 ```bash
-python3 -m unittest discover -s cli/tests -v
+python3 -m unittest discover -s python/tests -v
 ```

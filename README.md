@@ -106,11 +106,11 @@ Commands can be chained with `&&` or `;`. Separators inside quoted strings and `
 RubberOrca/
 ├── assets/
 │   └── logo.png                # Square project emblem
-├── cli/
-│   ├── README.md               # Python CLI and MCP server usage
-│   ├── pyproject.toml          # rubberorca package (CLI + rubberorca-mcp)
-│   ├── rubberorca/             # Protocol, BLE/Serial transports, CLI, and stdio MCP server
-│   └── tests/                  # Python unittest suite (CLI + MCP)
+├── python/
+│   ├── README.md               # Python SDK, CLI, and MCP server usage
+│   ├── pyproject.toml          # rubberorca package (SDK + CLI + rubberorca-mcp)
+│   ├── rubberorca/             # Protocol, transports, SDK, CLI, and stdio MCP server
+│   └── tests/                  # Python unittest suite (SDK + CLI + MCP)
 ├── docs/
 │   ├── README.md               # Documentation index
 │   ├── architecture.md         # Dual-core BLE/HID flow and NVS layout

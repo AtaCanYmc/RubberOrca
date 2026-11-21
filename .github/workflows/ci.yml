@@ -35,8 +35,8 @@ jobs:
       - name: Run Native Unit Tests
         run: pio test -e native
 
-      - name: Run CLI Unit Tests
-        run: python3 -m unittest discover -s cli/tests -v
+      - name: Run Python Unit Tests
+        run: python3 -m unittest discover -s python/tests -v
 
       - name: Build ESP32-S3 Super Mini
         run: pio run -e esp32s3_supermini

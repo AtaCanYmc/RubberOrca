@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rubberorca"
+version = "0.1.0"
+description = "Python SDK, CLI, and stdio MCP server for RubberOrca ESP32-S3 USB HID over BLE 5.0 GATT and USB CDC Serial."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.9"
+authors = [{ name = "AtaCanYmc", email = "atacanymc@gmail.com" }]
+keywords = ["esp32-s3", "usb-hid", "ble", "gatt", "mcp", "automation", "rubberorca"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: System :: Hardware",
+]
+dependencies = [
+  "bleak>=0.22",
+  "pyserial>=3.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/AtaCanYmc/RubberOrca"
+Repository = "https://github.com/AtaCanYmc/RubberOrca"
+Issues = "https://github.com/AtaCanYmc/RubberOrca/issues"
+
+[project.scripts]
+rubberorca = "rubberorca.cli:main"
+rubberorca-mcp = "rubberorca.mcp_server:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["rubberorca*"]
