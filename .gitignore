@@ -1,5 +1,6 @@
 .pio/
 dist/
+site/firmware/
 .idea/
 .vscode/
 .DS_Store

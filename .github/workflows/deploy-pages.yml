@@ -1,0 +1,60 @@
+name: Deploy RubberOrca Flasher Site
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "site/**"
+      - ".github/workflows/deploy-pages.yml"
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch latest release firmware binaries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p site/firmware
+          TAG=$(gh release view --json tagName -q .tagName || echo "v0.1.0")
+          echo "Latest release: $TAG"
+
+          gh release download "$TAG" --pattern "rubberorca-esp32s3-*-factory.bin" --dir site/firmware --clobber || true
+
+          if ls site/firmware/rubberorca-esp32s3-*-factory.bin >/dev/null 2>&1; then
+            for mf in site/manifest.json site/manifest-supermini.json site/manifest-n16r8.json; do
+              jq --arg v "$TAG" '.version = $v' "$mf" > "${mf}.tmp" && mv "${mf}.tmp" "$mf"
+            done
+          else
+            echo "::warning::No factory .bin assets found in release $TAG. Deploying site without updated firmware."
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./site"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

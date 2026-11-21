@@ -111,6 +111,11 @@ RubberOrca/
 │   ├── pyproject.toml          # rubberorca package (SDK + CLI + rubberorca-mcp)
 │   ├── rubberorca/             # Protocol, transports, SDK, CLI, and stdio MCP server
 │   └── tests/                  # Python unittest suite (SDK + CLI + MCP)
+├── site/
+│   ├── index.html              # Browser Web Serial flasher (ESP Web Tools) and simulator
+│   ├── styles.css              # Industrial Hardware Lab theme
+│   ├── app.js                  # Dual-board selector, PCB inspector, live simulator
+│   └── manifest-*.json         # ESP Web Tools manifests (Super Mini and N16R8)
 ├── docs/
 │   ├── README.md               # Documentation index
 │   ├── architecture.md         # Dual-core BLE/HID flow and NVS layout

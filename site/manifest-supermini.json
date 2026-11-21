@@ -1,0 +1,16 @@
+{
+  "name": "RubberOrca (ESP32-S3 Super Mini)",
+  "version": "0.1.0",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        {
+          "path": "./firmware/rubberorca-esp32s3-supermini-factory.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}
