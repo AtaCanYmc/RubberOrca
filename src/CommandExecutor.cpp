@@ -1,5 +1,6 @@
 #include "CommandExecutor.h"
 #include "Backend.h"
+#include "KeyLayout.h"
 #include "Protocol.h"
 #include "Utils.h"
 #include <ctype.h>
@@ -39,6 +40,8 @@ void sendHelp() {
       "RubberOrca (ESP32-S3) - Available commands:\n"
       "  help, ?                      - show this help\n"
       "  ble name \"...\"               - set BLE name (persisted in NVS)\n"
+      "  ble passkey <6-digit|off>    - set BLE bonding passkey (persisted in NVS)\n"
+      "  layout <us|tr_q>             - set USB HID keyboard layout (persisted in NVS)\n"
       "  type \"...\"                   - type text (escapes: \\n, \\t, \\\", \\\\)\n"
       "  delay N                      - delay N ms\n"
       "  enter, tab, backspace        - simple keys\n"
@@ -57,16 +60,29 @@ void sendHelp() {
 
 void keyboard_type_text(const char* s) {
   if (!s) return;
+  bool trq = (backend_get_layout() == static_cast<uint8_t>(KeyboardLayout::TR_Q));
   while (*s) {
+    uint32_t cp = 0;
     if (*s == '\\' && s[1] != '\0') {
       s++;
-      if (*s == 'n') backend_key_write_char('\n');
-      else if (*s == 't') backend_key_write_char('\t');
-      else backend_key_write_char(*s);
+      if (*s == 'n') cp = '\n';
+      else if (*s == 't') cp = '\t';
+      else cp = static_cast<unsigned char>(*s);
+      s++;
+    } else if (trq) {
+      cp = keyLayout_nextCodepoint(&s);
     } else {
-      backend_key_write_char(*s);
+      cp = static_cast<unsigned char>(*s++);
     }
-    s++;
+
+    if (trq) {
+      HidStroke stroke;
+      if (keyLayout_mapTrQ(cp, &stroke)) {
+        backend_key_hid_stroke(stroke.modifiers, stroke.keycode);
+      }
+    } else {
+      backend_key_write_char(static_cast<char>(cp));
+    }
   }
 }
 
@@ -192,6 +208,35 @@ bool execute_single(char* s, uint8_t depth) {
     nameBuf[ni] = '\0';
     backend_set_ble_name(nameBuf);
     return true;
+  }
+
+  if (strncmp(s, "ble passkey ", 12) == 0) {
+    char* arg = trim_inplace(s + 12);
+    if (iequals(arg, "off") || strcmp(arg, "0") == 0) {
+      backend_set_ble_passkey(0);
+      return true;
+    }
+    if (strlen(arg) != 6) return false;
+    for (int i = 0; i < 6; ++i) {
+      if (!isdigit((unsigned char)arg[i])) return false;
+    }
+    long pk = strtol(arg, nullptr, 10);
+    if (pk < 100000 || pk > 999999) return false;
+    backend_set_ble_passkey(static_cast<uint32_t>(pk));
+    return true;
+  }
+
+  if (strncmp(s, "layout ", 7) == 0) {
+    char* arg = trim_inplace(s + 7);
+    if (iequals(arg, "us")) {
+      backend_set_layout(static_cast<uint8_t>(KeyboardLayout::US));
+      return true;
+    }
+    if (iequals(arg, "tr_q") || iequals(arg, "tr-q") || iequals(arg, "tr")) {
+      backend_set_layout(static_cast<uint8_t>(KeyboardLayout::TR_Q));
+      return true;
+    }
+    return false;
   }
 
   if (strncmp(s, "type \"", 6) == 0) {

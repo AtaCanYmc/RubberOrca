@@ -46,4 +46,6 @@ Persistent state is stored in ESP32 NVS via `Preferences` under namespace `orca`
 | NVS Key | Type | Max Size | Default | Purpose |
 | :--- | :--- | :--- | :--- | :--- |
 | `ble_name` | String | 29 bytes | `RubberOrca` | BLE GAP advertising name persisted by `ble name "..."`. |
+| `ble_passkey` | UInt32 | 4 bytes | `0` (disabled) | Optional 6-digit static BLE bonding passkey (`100000`..`999999`). |
+| `kbd_layout` | UInt8 | 1 byte | `0` (`us`) | Active USB HID keyboard layout (`0` = US, `1` = Turkish Q). |
 | `m0` .. `m15` | String | 1023 bytes | Empty | Macro command chains persisted by `macro define mX { ... }`. |

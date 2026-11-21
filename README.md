@@ -93,6 +93,8 @@ The device replies with a 6-byte ACK frame `[0x02, 0x01, SEQ, OK, CODE, 0x03]` o
 | `macro define` | `m0..m15 { body }` | Persists a command chain in ESP32 NVS under namespace `orca`. |
 | `macro run` | `m0..m15` | Executes a stored NVS macro with recursion depth capped at 2. |
 | `ble name` | `"name"` | Updates BLE advertising name and persists it in NVS across reboots. |
+| `ble passkey` | `<6-digit\|off>` | Configures optional static BLE bonding passkey (`100000`..`999999`) or `off` in NVS. |
+| `layout` | `us\|tr_q` | Switches USB HID keyboard layout (US or UTF-8 Turkish Q) and persists it in NVS. |
 | `vibrate` | `<ms>` | Pulses `VIB_PIN` if defined at compile time. No-op otherwise. |
 | `help`, `?` | None | Prints the command list to BLE and USB CDC. |
 
@@ -120,9 +122,10 @@ RubberOrca/
 │   ├── Backend.h               # Hardware-agnostic HID, transport, and NVS callbacks
 │   └── Protocol.h              # Framing constants, buffer sizes, and BLE UUIDs
 ├── src/
-│   ├── BleTransport.h/.cpp     # Thread-safe NimBLE GATT server (0xFFE0 / 0xFFE1)
+│   ├── BleTransport.h/.cpp     # Thread-safe NimBLE GATT server (0xFFE0 / 0xFFE1 + passkey)
 │   ├── CommandExecutor.h/.cpp  # Command parser, chaining, jiggler, and macro dispatch
-│   ├── Esp32Backend.cpp        # TinyUSB HID, USB CDC, and ESP32 Preferences backend
+│   ├── Esp32Backend.cpp        # TinyUSB HID, RGB status LED, USB CDC, and NVS backend
+│   ├── KeyLayout.h/.cpp        # UTF-8 decoder and Turkish Q raw HID layout mapper
 │   ├── PacketParser.h/.cpp     # Ring-buffered STX/ETX XOR frame and 1-byte parser
 │   ├── Utils.h/.cpp            # String utilities and ACK frame serializer
 │   └── main.cpp                # Arduino setup() and loop() entry point

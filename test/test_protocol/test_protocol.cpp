@@ -25,6 +25,9 @@ struct MockState {
   uint32_t nowMs = 0;
   uint16_t lastVibrateMs = 0;
   std::string bleName;
+  uint32_t blePasskey = 0;
+  uint8_t layout = 0;
+  std::vector<std::pair<uint8_t, uint8_t>> hidStrokes;
   std::string macros[MACRO_SLOTS];
 
   void reset() {
@@ -43,6 +46,9 @@ struct MockState {
     nowMs = 0;
     lastVibrateMs = 0;
     bleName.clear();
+    blePasskey = 0;
+    layout = 0;
+    hidStrokes.clear();
     for (auto& m : macros) m.clear();
   }
 } mock;
@@ -89,6 +95,9 @@ void backend_send_bytes(const uint8_t* data, size_t len) {
 void backend_send_text(const char* text) { mock.sentText += text; }
 void backend_key_write_char(char c) { mock.typedChars.push_back(c); }
 void backend_key_write(KeyCode key) { mock.keysWritten.push_back(key); }
+void backend_key_hid_stroke(uint8_t modifiers, uint8_t keycode) {
+  mock.hidStrokes.push_back({modifiers, keycode});
+}
 void backend_key_press_char(char c) { mock.typedChars.push_back(c); }
 void backend_key_press(KeyCode key) { mock.keysPressed.push_back(key); }
 void backend_key_release(KeyCode key) { mock.keysReleased.push_back(key); }
@@ -101,6 +110,9 @@ void backend_delay_ms(uint32_t ms) { mock.totalDelayMs += ms; mock.nowMs += ms; 
 uint32_t backend_millis() { return mock.nowMs; }
 void backend_vibrate(uint16_t ms) { mock.lastVibrateMs = ms; }
 void backend_set_ble_name(const char* name) { mock.bleName = name; }
+void backend_set_ble_passkey(uint32_t passkey) { mock.blePasskey = passkey; }
+void backend_set_layout(uint8_t layoutId) { mock.layout = layoutId; }
+uint8_t backend_get_layout() { return mock.layout; }
 void backend_macro_save(uint8_t slot, const char* body) {
   if (slot < MACRO_SLOTS) mock.macros[slot] = body;
 }
@@ -250,6 +262,46 @@ void test_security_bounds_and_sanitization() {
   assertAck(26, 0, 1);
 }
 
+void test_ble_passkey_and_turkish_q_layout() {
+  // Valid 6-digit passkey
+  feedFrame(buildFrame(VERSION, 30, "ble passkey 482913"));
+  assertAck(30, 1, 0);
+  TEST_ASSERT_EQUAL_UINT32(482913, mock.blePasskey);
+
+  // Invalid passkeys rejected
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 31, "ble passkey 12345"));
+  assertAck(31, 0, 1);
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 32, "ble passkey 000123"));
+  assertAck(32, 0, 1);
+
+  // Disable passkey
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 33, "ble passkey off"));
+  assertAck(33, 1, 0);
+  TEST_ASSERT_EQUAL_UINT32(0, mock.blePasskey);
+
+  // Switch to Turkish Q layout and type UTF-8 Turkish + AltGr '@'
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 34, "layout tr_q"));
+  assertAck(34, 1, 0);
+  TEST_ASSERT_EQUAL_UINT8(1, mock.layout);
+
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 35, "type \"\xC5\x9F\xC4\x9F\xC4\xB0@\""));  // şğİ@
+  assertAck(35, 1, 0);
+  TEST_ASSERT_EQUAL_UINT(4, mock.hidStrokes.size());
+  TEST_ASSERT_EQUAL_UINT8(0x00, mock.hidStrokes[0].first);   // ş: no shift
+  TEST_ASSERT_EQUAL_UINT8(0x33, mock.hidStrokes[0].second);
+  TEST_ASSERT_EQUAL_UINT8(0x00, mock.hidStrokes[1].first);   // ğ: no shift
+  TEST_ASSERT_EQUAL_UINT8(0x2F, mock.hidStrokes[1].second);
+  TEST_ASSERT_EQUAL_UINT8(0x02, mock.hidStrokes[2].first);   // İ: shift
+  TEST_ASSERT_EQUAL_UINT8(0x34, mock.hidStrokes[2].second);
+  TEST_ASSERT_EQUAL_UINT8(0x40, mock.hidStrokes[3].first);   // @: AltGr + Q
+  TEST_ASSERT_EQUAL_UINT8(0x14, mock.hidStrokes[3].second);
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_valid_type_frame_and_escapes);
@@ -262,5 +314,6 @@ int main() {
   RUN_TEST(test_ble_name_and_jiggler_poll);
   RUN_TEST(test_press_modifier_and_combo);
   RUN_TEST(test_security_bounds_and_sanitization);
+  RUN_TEST(test_ble_passkey_and_turkish_q_layout);
   return UNITY_END();
 }

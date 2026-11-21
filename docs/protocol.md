@@ -70,4 +70,11 @@ When the parser is in `WAIT_STX`, raw bytes in `0x10`..`0x8F` trigger direct act
 | `vibrate <ms>` | `0` to `5000` ms | NACK (`code 1`) |
 | `mouse move` / `scroll` | `-127` to `127` | Clamped to `[-127, 127]` |
 | `ble name "..."` | 1 to 29 printable ASCII chars (`0x20`..`0x7E`) | NACK (`code 1`) |
+| `ble passkey <pin\|off>` | `off`, `0`, or 6-digit integer `100000`..`999999` | NACK (`code 1`) |
+| `layout <us\|tr_q>` | `us`, `tr_q`, `tr-q`, or `tr` | NACK (`code 1`) |
 | `macro run` nesting | Max depth `2` | NACK (`code 1`) |
+
+## BLE Passkey Bonding and Keyboard Layouts
+
+- **BLE Passkey Bonding:** Setting `ble passkey 482913` persists the 6-digit passkey in NVS. On the next boot, `BleTransport` enables BLE Secure Connections, MITM, bonding, and encrypted GATT permissions on `0xFFE1`. Run `ble passkey off` and reboot to restore open HM-10 compatibility.
+- **Turkish Q Layout (`layout tr_q`):** Decodes UTF-8 payloads in `type "..."` and transmits raw USB HID Boot Keyboard usage IDs plus `LSHIFT` (`0x02`) and `RALT` (`0x40`) modifier reports for Turkish letters (`ğ`, `Ğ`, `ü`, `Ü`, `ş`, `Ş`, `ı`, `İ`, `ö`, `Ö`, `ç`, `Ç`) and Turkish Q punctuation/AltGr symbols (`@`, `\`, `[`, `]`, `{`, `}`, `|`, `#`, `$`, `~`).

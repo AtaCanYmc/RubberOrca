@@ -40,6 +40,10 @@ def build_command_from_args(args: argparse.Namespace) -> str:
             return f"macro run {args.slot}"
     if cmd == "ble-name":
         return f'ble name "{args.name}"'
+    if cmd == "ble-passkey":
+        return f"ble passkey {args.passkey}"
+    if cmd == "layout":
+        return f"layout {args.name}"
     raise ValueError(f"Unsupported command: {cmd}")
 
 
@@ -100,6 +104,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_ble = sub.add_parser("ble-name", help="Update BLE advertising name in NVS")
     p_ble.add_argument("name", help="Printable ASCII name (1-29 chars)")
+
+    p_pk = sub.add_parser("ble-passkey", help="Set 6-digit BLE bonding passkey or 'off'")
+    p_pk.add_argument("passkey", help="6-digit passkey (100000-999999) or 'off'")
+
+    p_lay = sub.add_parser("layout", help="Set USB HID keyboard layout in NVS")
+    p_lay.add_argument("name", choices=["us", "tr_q"])
 
     p_raw = sub.add_parser("raw-byte", help="Send a single-byte fallback command (e.g. 0x32)")
     p_raw.add_argument("value", help="Hex or decimal byte in 0x10..0x8F")

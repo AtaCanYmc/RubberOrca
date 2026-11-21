@@ -64,6 +64,9 @@ class TestCli(unittest.TestCase):
             (["macro", "define", "m0", "enter"], "macro define m0 { enter }"),
             (["macro", "run", "m15"], "macro run m15"),
             (["ble-name", "OrcaMini"], 'ble name "OrcaMini"'),
+            (["ble-passkey", "482913"], "ble passkey 482913"),
+            (["ble-passkey", "off"], "ble passkey off"),
+            (["layout", "tr_q"], "layout tr_q"),
         ]
         for argv, expected in cases:
             args = parser.parse_args(argv)

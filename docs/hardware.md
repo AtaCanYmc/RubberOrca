@@ -45,3 +45,28 @@ If TinyUSB prevents automatic bootloader entry:
 ## Optional Haptic Motor Pin
 
 By default, `vibrate <ms>` is a safe no-op. To drive a coin vibration motor through a MOSFET or transistor stage, add `-DVIB_PIN=<GPIO>` to `build_flags` in `platformio.ini`. Never drive a motor directly from an ESP32-S3 GPIO pin without current limiting and a flyback diode.
+
+## Status RGB LED Feedback
+
+On boards defining `RGB_BUILTIN` (or an explicit `-DRO_RGB_PIN=<GPIO>`), the firmware drives the onboard NeoPixel via Arduino-ESP32 `rgbLedWrite` at low brightness:
+
+| State | Color (R, G, B) | Meaning |
+| :--- | :--- | :--- |
+| Advertising | Dim Blue `(0, 0, 16)` | BLE GATT active, waiting for client connection. |
+| Connected | Dim Green `(0, 16, 0)` | BLE client connected to Service `0xFFE0`. |
+| Jiggler Active | Dim Amber `(16, 10, 0)` | Mouse jiggler enabled (overrides BLE color). |
+
+Add `-DRO_LED_DISABLE` to `build_flags` to turn off status LED output completely.
+
+## Build-Time USB Descriptors and Default Layout
+
+Override USB identity or default keyboard layout in `platformio.ini` `build_flags`:
+
+| Flag | Default | Purpose |
+| :--- | :--- | :--- |
+| `-DRO_USB_VID=0xXXXX` | Board default | Custom 16-bit USB Vendor ID applied before `USB.begin()`. |
+| `-DRO_USB_PID=0xXXXX` | Board default | Custom 16-bit USB Product ID applied before `USB.begin()`. |
+| `-DRO_USB_PRODUCT=\"...\"` | `RubberOrca HID` | USB HID product string descriptor. |
+| `-DRO_USB_MANUFACTURER=\"...\"` | `RubberOrca` | USB HID manufacturer string descriptor. |
+| `-DRO_USB_SERIAL=\"...\"` | Chip MAC | Custom USB serial string descriptor. |
+| `-DRO_DEFAULT_LAYOUT_TR_Q` | Unset (`US`) | Default to Turkish Q layout when NVS `kbd_layout` is unset. |

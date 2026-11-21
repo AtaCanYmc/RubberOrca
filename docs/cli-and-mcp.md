@@ -51,6 +51,8 @@ Requires Python 3.9 or newer. Runtime dependencies are `bleak` and `pyserial`.
 | `macro define` | `<m0..m15> <body>` | Saves command chain into ESP32 NVS slot. |
 | `macro run` | `<m0..m15>` | Executes stored NVS macro slot. |
 | `ble-name` | `<name>` | Persists printable ASCII BLE name (`1`..`29` chars) in NVS. |
+| `ble-passkey` | `<6-digit\|off>` | Persists 6-digit BLE bonding passkey (`100000`..`999999`) or disables bonding (`off`). |
+| `layout` | `us\|tr_q` | Switches active USB HID keyboard layout and persists in NVS. |
 | `raw-byte` | `<hex_or_dec>` | Sends single-byte fallback (`0x10`..`0x8F`) without ACK. |
 
 ### Exit Codes

@@ -7,12 +7,14 @@
 #include <Arduino.h>
 
 void esp32Backend_init();
+void esp32Backend_updateStatusLed(bool bleConnected, bool jigglerActive);
 
 void setup() {
   Serial.begin(115200);
   esp32Backend_init();
   packetParser_init();
   commandExecutor_init();
+  esp32Backend_updateStatusLed(false, false);
   backend_send_text("RubberOrca ready\n");
 }
 
@@ -36,6 +38,7 @@ void loop() {
 
   packetParser_process();
   jiggler_poll();
+  esp32Backend_updateStatusLed(bleTransport_isConnected(), jiggler_get());
   delay(1);
 }
 

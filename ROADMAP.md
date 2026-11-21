@@ -13,10 +13,10 @@ Milestones reflect planned engineering work grouped by release target.
 
 ## v1.1.0: Hardware Ergonomics and BLE Hardening
 
-- [ ] Optional BLE passkey bonding mode configurable via NVS.
-- [ ] Status LED / NeoPixel feedback for BLE connection state and jiggler activity.
-- [ ] Configurable USB VID/PID and HID string descriptors at build time.
-- [ ] Optional Turkish Q / non-US keyboard layout mapping table.
+- [x] Optional BLE passkey bonding mode configurable via NVS (`ble passkey <6-digit|off>`).
+- [x] Status LED / NeoPixel feedback for BLE connection state and jiggler activity (`rgbLedWrite`).
+- [x] Configurable USB VID/PID and HID string descriptors at build time (`RO_USB_*` flags).
+- [x] Optional Turkish Q / non-US keyboard layout mapping table (`layout <us|tr_q>`).
 
 ## v2.0.0: Wi-Fi Workstation and Script Storage (N16R8 Focus)
 

@@ -16,12 +16,26 @@
 #define BLE_DEFAULT_NAME "RubberOrca"
 #endif
 
+#ifndef RO_USB_PRODUCT
+#define RO_USB_PRODUCT "RubberOrca HID"
+#endif
+
+#ifndef RO_USB_MANUFACTURER
+#define RO_USB_MANUFACTURER "RubberOrca"
+#endif
+
+#if !defined(RO_RGB_PIN) && defined(RGB_BUILTIN)
+#define RO_RGB_PIN RGB_BUILTIN
+#endif
+
 namespace {
 
 USBHIDKeyboard Keyboard;
 USBHIDMouse Mouse;
 USBHIDConsumerControl ConsumerControl;
 Preferences prefs;
+uint8_t activeLayout = 0;
+int8_t lastLedState = -1;
 
 uint8_t mapKeyCode(KeyCode key) {
   switch (key) {
@@ -67,9 +81,27 @@ uint8_t mapMouseBtn(MouseBtn btn) {
 void esp32Backend_init() {
   prefs.begin("orca", false);
 
+#ifdef RO_DEFAULT_LAYOUT_TR_Q
+  activeLayout = prefs.getUChar("kbd_layout", 1);
+#else
+  activeLayout = prefs.getUChar("kbd_layout", 0);
+#endif
+
 #ifdef VIB_PIN
   pinMode(VIB_PIN, OUTPUT);
   digitalWrite(VIB_PIN, LOW);
+#endif
+
+#ifdef RO_USB_VID
+  USB.VID(RO_USB_VID);
+#endif
+#ifdef RO_USB_PID
+  USB.PID(RO_USB_PID);
+#endif
+  USB.productName(RO_USB_PRODUCT);
+  USB.manufacturerName(RO_USB_MANUFACTURER);
+#ifdef RO_USB_SERIAL
+  USB.serialNumber(RO_USB_SERIAL);
 #endif
 
   Keyboard.begin();
@@ -78,7 +110,22 @@ void esp32Backend_init() {
   USB.begin();
 
   String bleName = prefs.getString("ble_name", BLE_DEFAULT_NAME);
-  bleTransport_init(bleName.c_str());
+  uint32_t passkey = prefs.getUInt("ble_passkey", 0);
+  bleTransport_init(bleName.c_str(), passkey);
+}
+
+void esp32Backend_updateStatusLed(bool bleConnected, bool jigglerActive) {
+#if !defined(RO_LED_DISABLE) && defined(RO_RGB_PIN)
+  int8_t state = jigglerActive ? 2 : (bleConnected ? 1 : 0);
+  if (state == lastLedState) return;
+  lastLedState = state;
+  if (state == 2)      rgbLedWrite(RO_RGB_PIN, 16, 10, 0);   // Jiggler active: dim amber
+  else if (state == 1) rgbLedWrite(RO_RGB_PIN, 0, 16, 0);    // BLE connected: dim green
+  else                 rgbLedWrite(RO_RGB_PIN, 0, 0, 16);    // Advertising: dim blue
+#else
+  (void)bleConnected;
+  (void)jigglerActive;
+#endif
 }
 
 void backend_send_bytes(const uint8_t* data, size_t len) {
@@ -101,6 +148,17 @@ void backend_key_write_char(char c) {
 void backend_key_write(KeyCode key) {
   uint8_t code = mapKeyCode(key);
   if (code) Keyboard.write(code);
+}
+
+void backend_key_hid_stroke(uint8_t modifiers, uint8_t keycode) {
+  KeyReport rep = {};
+  rep.modifiers = modifiers;
+  rep.keys[0] = keycode;
+  Keyboard.sendReport(&rep);
+  delay(8);
+  KeyReport empty = {};
+  Keyboard.sendReport(&empty);
+  delay(4);
 }
 
 void backend_key_press_char(char c) {
@@ -163,6 +221,19 @@ void backend_set_ble_name(const char* name) {
   if (!name || !*name) return;
   prefs.putString("ble_name", name);
   bleTransport_setName(name);
+}
+
+void backend_set_ble_passkey(uint32_t passkey) {
+  prefs.putUInt("ble_passkey", passkey);
+}
+
+void backend_set_layout(uint8_t layoutId) {
+  activeLayout = layoutId;
+  prefs.putUChar("kbd_layout", layoutId);
+}
+
+uint8_t backend_get_layout() {
+  return activeLayout;
 }
 
 void backend_macro_save(uint8_t slot, const char* body) {

@@ -4,6 +4,7 @@
 #include "Protocol.h"
 #include <Arduino.h>
 #include <BLEDevice.h>
+#include <BLESecurity.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
 
@@ -52,20 +53,31 @@ class CharCallbacks : public BLECharacteristicCallbacks {
 
 }  // namespace
 
-void bleTransport_init(const char* deviceName) {
+void bleTransport_init(const char* deviceName, uint32_t passkey) {
   const char* name = (deviceName && *deviceName) ? deviceName : "RubberOrca";
   BLEDevice::init(name);
+
+  if (passkey >= 100000 && passkey <= 999999) {
+    BLESecurity::setAuthenticationMode(true, true, true);
+    BLESecurity::setCapability(ESP_IO_CAP_OUT);
+    BLESecurity::setPassKey(true, passkey);
+  }
 
   bleServer = BLEDevice::createServer();
   bleServer->setCallbacks(new ServerCallbacks());
 
   BLEService* service = bleServer->createService(BLE_SERVICE_UUID);
-  bleChar = service->createCharacteristic(
-      BLE_CHAR_UUID,
-      BLECharacteristic::PROPERTY_READ |
-      BLECharacteristic::PROPERTY_WRITE |
-      BLECharacteristic::PROPERTY_WRITE_NR |
-      BLECharacteristic::PROPERTY_NOTIFY);
+  uint32_t props = BLECharacteristic::PROPERTY_READ |
+                   BLECharacteristic::PROPERTY_WRITE |
+                   BLECharacteristic::PROPERTY_WRITE_NR |
+                   BLECharacteristic::PROPERTY_NOTIFY;
+  if (passkey >= 100000 && passkey <= 999999) {
+    props |= BLECharacteristic::PROPERTY_READ_ENC | BLECharacteristic::PROPERTY_WRITE_ENC;
+  }
+  bleChar = service->createCharacteristic(BLE_CHAR_UUID, props);
+  if (passkey >= 100000 && passkey <= 999999) {
+    bleChar->setAccessPermissions(ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED);
+  }
   bleChar->setCallbacks(new CharCallbacks());
   service->start();
 

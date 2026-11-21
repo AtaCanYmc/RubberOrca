@@ -41,6 +41,7 @@ void backend_send_text(const char* text);
 // Native USB HID actions
 void backend_key_write_char(char c);
 void backend_key_write(KeyCode key);
+void backend_key_hid_stroke(uint8_t modifiers, uint8_t keycode);
 void backend_key_press_char(char c);
 void backend_key_press(KeyCode key);
 void backend_key_release(KeyCode key);
@@ -56,5 +57,8 @@ void backend_delay_ms(uint32_t ms);
 uint32_t backend_millis();
 void backend_vibrate(uint16_t ms);
 void backend_set_ble_name(const char* name);
+void backend_set_ble_passkey(uint32_t passkey);
+void backend_set_layout(uint8_t layoutId);
+uint8_t backend_get_layout();
 void backend_macro_save(uint8_t slot, const char* body);
 void backend_macro_read(uint8_t slot, char* outBuf, size_t outLen);
