@@ -1,25 +1,22 @@
 const REPO = "AtaCanYmc/RubberOrca";
+const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
 
-// 1. Subtle cursor glow
-const glow = document.getElementById("cursorGlow");
-window.addEventListener("pointermove", (e) => {
-  glow.style.left = `${e.clientX}px`;
-  glow.style.top = `${e.clientY}px`;
-});
-
-// 2. Dual-board flasher manifest selector (Super Mini / N16R8)
+// 1. Dual-board flasher manifest selector (Super Mini / N16R8)
 const flashButton = document.getElementById("flashButton");
 const boardSpec = document.getElementById("boardSpec");
 document.getElementById("boardSelector").addEventListener("click", (e) => {
   const btn = e.target.closest(".board-btn");
   if (!btn) return;
-  document.querySelectorAll(".board-btn").forEach((b) => b.classList.remove("active"));
-  btn.classList.add("active");
+  document.querySelectorAll(".board-btn").forEach((b) => {
+    const active = b === btn;
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-pressed", String(active));
+  });
   flashButton.setAttribute("manifest", btn.dataset.manifest);
   boardSpec.textContent = btn.dataset.spec;
 });
 
-// 3. Fetch latest GitHub Release tag & date
+// 2. Fetch latest GitHub Release tag & date
 async function loadLatestRelease() {
   const tagEl = document.getElementById("releaseTag");
   const metaEl = document.getElementById("releaseMeta");
@@ -38,36 +35,44 @@ async function loadLatestRelease() {
 }
 loadLatestRelease();
 
-// 4. Interactive PCB 3D tilt & hotspot inspector
+// 3. Interactive PCB 3D tilt (reduced-motion safe) & keyboard-accessible hotspots
 const pcbCard = document.getElementById("pcbCard");
 const hotspotStatus = document.getElementById("hotspotStatus");
 const hotspotDetail = document.getElementById("hotspotDetail");
+const DEFAULT_HOTSPOT_DETAIL = "Hover or focus a hardware block to inspect signal path.";
 
 pcbCard.addEventListener("mousemove", (e) => {
+  if (!motionQuery.matches) return;
   const rect = pcbCard.getBoundingClientRect();
   const x = (e.clientX - rect.left) / rect.width - 0.5;
   const y = (e.clientY - rect.top) / rect.height - 0.5;
-  pcbCard.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+  pcbCard.style.transform = `perspective(900px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
 });
 
 pcbCard.addEventListener("mouseleave", () => {
-  pcbCard.style.transform = "perspective(900px) rotateY(0deg) rotateX(0deg)";
+  pcbCard.style.transform = "";
 });
+
+function showHotspot(el) {
+  hotspotStatus.textContent = el.dataset.name;
+  hotspotStatus.style.color = "var(--accent)";
+  hotspotDetail.textContent = el.dataset.detail;
+}
+
+function resetHotspot() {
+  hotspotStatus.textContent = "INSPECT MODULE";
+  hotspotStatus.style.color = "var(--muted)";
+  hotspotDetail.textContent = DEFAULT_HOTSPOT_DETAIL;
+}
 
 document.querySelectorAll(".hotspot").forEach((el) => {
-  el.addEventListener("mouseenter", () => {
-    hotspotStatus.textContent = el.dataset.name;
-    hotspotStatus.style.color = "var(--accent)";
-    hotspotDetail.textContent = el.dataset.detail;
-  });
-  el.addEventListener("mouseleave", () => {
-    hotspotStatus.textContent = "HOVER MODULE";
-    hotspotStatus.style.color = "var(--muted)";
-    hotspotDetail.textContent = "Select or hover a hardware block to inspect signal path.";
-  });
+  el.addEventListener("mouseenter", () => showHotspot(el));
+  el.addEventListener("mouseleave", resetHotspot);
+  el.addEventListener("focus", () => showHotspot(el));
+  el.addEventListener("blur", resetHotspot);
 });
 
-// 5. Interactive HID Macro Simulator (RubberOrca wire commands)
+// 4. Interactive HID Macro Simulator (RubberOrca wire commands)
 const PRESETS = {
   chain: {
     script: `press gui 50 && delay 250 && type "terminal" && delay 150 && enter\ndelay 350 && type "echo \\"RubberOrca HID active\\"" && enter`,
@@ -94,7 +99,7 @@ const PRESETS = {
     events: [
       { delay: 260, type: "hid", text: "[NVS] Saved slot m0 (26 bytes)" },
       { delay: 320, type: "hid", text: "[HID] TYPE: git status + KEY_RETURN" },
-      { delay: 360, type: "host", text: "On branch main — working tree clean" },
+      { delay: 360, type: "host", text: "On branch main. Working tree clean." },
       { delay: 300, type: "hid", text: "[LED] RGB -> AMBER (16, 10, 0) // JIGGLER ON" },
       { delay: 200, type: "hid", text: "[BLE 0xFFE1] TX ACK seq=3 ok=1 code=0" }
     ]
@@ -112,8 +117,10 @@ const runSimBtn = document.getElementById("runSimBtn");
 function renderPreset(key) {
   activePreset = key;
   simCode.textContent = PRESETS[key].script;
-  document.querySelectorAll(".preset-btn").forEach((b) => {
-    b.classList.toggle("active", b.dataset.preset === key);
+  document.querySelectorAll("#simPresets .preset-btn").forEach((b) => {
+    const active = b.dataset.preset === key;
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-selected", String(active));
   });
 }
 
@@ -130,7 +137,8 @@ runSimBtn.addEventListener("click", async () => {
   termOutput.innerHTML = `<div class="dim">// USB-HID endpoint claimed (ESP32-S3 TinyUSB)...</div>`;
 
   for (const evt of PRESETS[activePreset].events) {
-    await new Promise((r) => setTimeout(r, evt.delay));
+    const wait = motionQuery.matches ? evt.delay : 40;
+    await new Promise((r) => setTimeout(r, wait));
     const line = document.createElement("div");
     line.className = evt.type === "hid" ? "hid-evt" : "";
     line.textContent = evt.text;
@@ -149,7 +157,7 @@ runSimBtn.addEventListener("click", async () => {
 
 renderPreset(activePreset);
 
-// 6. CLI / MCP / Python SDK Usage Tabs + Copy
+// 5. CLI / MCP / Python SDK Usage Tabs + Invoker Command Copy Button
 const USAGE_SNIPPETS = {
   cli: {
     code: `# Install unified package (SDK + CLI + MCP)
@@ -196,14 +204,13 @@ orca.key("enter")
 orca.media("play_pause")
 orca.mouse_move(40, -20)
 orca.jiggler("toggle")`,
-    meta: "Zero extra framework dependencies — built on bleak and pyserial."
+    meta: "Zero extra framework dependencies. Built on bleak and pyserial."
   }
 };
 
 let activeUsage = "cli";
 const usageCode = document.getElementById("usageCode");
 const usageMeta = document.getElementById("usageMeta");
-const copyUsageBtn = document.getElementById("copyUsageBtn");
 
 function renderUsage(key) {
   activeUsage = key;
@@ -221,16 +228,60 @@ document.getElementById("usageTabs").addEventListener("click", (e) => {
   if (btn) renderUsage(btn.dataset.usage);
 });
 
-copyUsageBtn.addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(USAGE_SNIPPETS[activeUsage].code);
-    copyUsageBtn.textContent = "COPIED";
-    setTimeout(() => {
-      copyUsageBtn.textContent = "COPY";
-    }, 1500);
-  } catch {
-    copyUsageBtn.textContent = "FAILED";
-  }
-});
-
 renderUsage(activeUsage);
+
+// Copy button using Invoker Commands + progressive click fallback
+const copyTimers = new WeakMap();
+let lastAnnouncement = "";
+
+function reportCopy(button, ok) {
+  const tip = button.nextElementSibling;
+  clearTimeout(copyTimers.get(button));
+  button.removeAttribute("data-copied");
+  button.removeAttribute("data-failed");
+  let message = ok ? "Copied" : "Copy failed";
+  if (message === lastAnnouncement) message += "\u00A0";
+  lastAnnouncement = message;
+  tip.textContent = "";
+  void button.offsetWidth;
+  button.setAttribute(ok ? "data-copied" : "data-failed", "");
+  requestAnimationFrame(() => {
+    tip.textContent = message;
+  });
+  copyTimers.set(
+    button,
+    setTimeout(() => {
+      button.removeAttribute("data-copied");
+      button.removeAttribute("data-failed");
+      tip.textContent = "";
+    }, 2000)
+  );
+}
+
+async function copyTarget(button, target) {
+  const text = target.innerText.trim();
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+    reportCopy(button, true);
+  } catch {
+    reportCopy(button, false);
+  }
+}
+
+document.addEventListener(
+  "command",
+  (event) => {
+    if (event.command === "--copy") copyTarget(event.source, event.target);
+  },
+  true
+);
+
+if (!("CommandEvent" in window)) {
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest('button[command="--copy"]');
+    if (!button) return;
+    const target = document.getElementById(button.getAttribute("commandfor"));
+    if (target) copyTarget(button, target);
+  });
+}

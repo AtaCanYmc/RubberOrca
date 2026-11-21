@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RubberOrca — ESP32-S3 Native USB HID &amp; BLE 5.0 Web Flasher</title>
+  <title>RubberOrca | ESP32-S3 Native USB HID and BLE 5.0 Web Flasher</title>
   <meta name="description" content="Open-source ESP32-S3 firmware, Web Serial browser flasher, Python SDK, CLI, and MCP server for wired USB-OTG HID automation controlled over BLE 5.0 GATT." />
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#09090b" />
@@ -15,7 +15,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="RubberOrca" />
   <meta property="og:url" content="https://atacanymc.github.io/RubberOrca/" />
-  <meta property="og:title" content="RubberOrca — ESP32-S3 Native USB HID &amp; BLE 5.0 Web Flasher" />
+  <meta property="og:title" content="RubberOrca | ESP32-S3 Native USB HID and BLE 5.0 Web Flasher" />
   <meta property="og:description" content="Flash RubberOrca to ESP32-S3 Super Mini or N16R8 straight from your browser. Wired USB-OTG HID Keyboard, Mouse, and Consumer Control over BLE 5.0 GATT." />
   <meta property="og:image" content="https://atacanymc.github.io/RubberOrca/logo.png" />
   <meta property="og:image:width" content="512" />
@@ -23,7 +23,7 @@
   <meta property="og:image:alt" content="RubberOrca stylized orca PCB emblem" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="RubberOrca — ESP32-S3 Native USB HID &amp; BLE 5.0 Web Flasher" />
+  <meta name="twitter:title" content="RubberOrca | ESP32-S3 Native USB HID and BLE 5.0 Web Flasher" />
   <meta name="twitter:description" content="Single-chip ESP32-S3 USB-OTG HID firmware, browser Web Serial flasher, Python SDK, CLI, and MCP server." />
   <meta name="twitter:image" content="https://atacanymc.github.io/RubberOrca/logo.png" />
 
@@ -60,14 +60,11 @@
   <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 </head>
 <body>
-  <div class="bg-grid" aria-hidden="true"></div>
-  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
-
   <!-- TOP NAVIGATION -->
   <header class="topbar">
     <div class="container topbar-inner">
       <a href="#" class="brand">
-        <span class="brand-dot"></span>
+        <span class="brand-dot" aria-hidden="true"></span>
         <span class="brand-name">RUBBERORCA</span>
         <span class="mono tag" id="releaseTag">v0.1.0</span><!-- x-release-please-version -->
       </a>
@@ -78,7 +75,7 @@
         <a href="#simulator">03_SIMULATOR</a>
         <a href="#ecosystem">04_CLI/MCP</a>
         <a href="https://github.com/AtaCanYmc/RubberOrca" target="_blank" rel="noopener noreferrer" class="nav-ext">
-          GITHUB ↗
+          GITHUB
         </a>
       </nav>
     </div>
@@ -90,9 +87,9 @@
       <div class="hero-copy">
         <div class="eyebrow mono">
           <span>ESP32-S3</span>
-          <span class="sep">//</span>
+          <span class="sep" aria-hidden="true">//</span>
           <span>NATIVE USB OTG</span>
-          <span class="sep">//</span>
+          <span class="sep" aria-hidden="true">//</span>
           <span>BLE 5.0 GATT</span>
         </div>
 
@@ -106,18 +103,18 @@
         </p>
 
         <div class="board-selector mono" id="boardSelector" role="group" aria-label="Target ESP32-S3 Board">
-          <button type="button" class="board-btn active" data-board="supermini" data-manifest="./manifest-supermini.json" data-spec="ESP32-S3 Super Mini (4MB / 2MB)">
+          <button type="button" class="board-btn active" aria-pressed="true" data-board="supermini" data-manifest="./manifest-supermini.json" data-spec="ESP32-S3 Super Mini (4MB / 2MB)">
             SUPER MINI
           </button>
-          <button type="button" class="board-btn" data-board="n16r8" data-manifest="./manifest-n16r8.json" data-spec="ESP32-S3 N16R8 (16MB / 8MB)">
+          <button type="button" class="board-btn" aria-pressed="false" data-board="n16r8" data-manifest="./manifest-n16r8.json" data-spec="ESP32-S3 N16R8 (16MB / 8MB)">
             N16R8 DEVKITC
           </button>
         </div>
 
         <div class="hero-actions" id="flash">
           <esp-web-install-button manifest="./manifest-supermini.json" id="flashButton">
-            <button slot="activate" class="btn btn-primary">
-              <span class="btn-indicator"></span>
+            <button type="button" slot="activate" class="btn btn-primary">
+              <span class="btn-indicator" aria-hidden="true"></span>
               <span>CONNECT &amp; FLASH</span>
               <span class="mono btn-sub">WEB SERIAL</span>
             </button>
@@ -130,7 +127,7 @@
           </esp-web-install-button>
 
           <a href="#architecture" class="btn btn-ghost mono">
-            VIEW SCHEMATICS ↓
+            VIEW SCHEMATICS
           </a>
         </div>
 
@@ -153,32 +150,28 @@
       <!-- INTERACTIVE HARDWARE BLUEPRINT -->
       <div class="hero-visual">
         <div class="pcb-frame" id="pcbCard">
-          <span class="corner tl">+</span>
-          <span class="corner tr">+</span>
-          <span class="corner bl">+</span>
-          <span class="corner br">+</span>
+          <span class="corner tl" aria-hidden="true">+</span>
+          <span class="corner tr" aria-hidden="true">+</span>
+          <span class="corner bl" aria-hidden="true">+</span>
+          <span class="corner br" aria-hidden="true">+</span>
 
           <div class="pcb-header mono">
             <span>FIG 01 // BOARD TOPOLOGY</span>
-            <span id="hotspotStatus">HOVER MODULE</span>
+            <span id="hotspotStatus">INSPECT MODULE</span>
           </div>
 
-          <svg viewBox="0 0 380 460" class="pcb-svg" role="img" aria-label="ESP32-S3 RubberOrca Board Diagram">
-            <!-- PCB Outline -->
+          <svg viewBox="0 0 380 460" width="380" height="460" class="pcb-svg" role="img" aria-label="ESP32-S3 RubberOrca Board Diagram">
             <rect x="70" y="30" width="240" height="400" rx="14" class="pcb-board" />
-            <!-- Mounting Holes -->
             <circle cx="92" cy="52" r="7" class="pcb-hole" />
             <circle cx="288" cy="52" r="7" class="pcb-hole" />
             <circle cx="92" cy="408" r="7" class="pcb-hole" />
             <circle cx="288" cy="408" r="7" class="pcb-hole" />
 
-            <!-- GPIO Pin Headers -->
             <g class="pcb-pins">
               <rect x="80" y="95" width="16" height="270" rx="2" />
               <rect x="284" y="95" width="16" height="270" rx="2" />
             </g>
 
-            <!-- PCB Traces -->
             <g class="pcb-traces">
               <path d="M190 90 L190 140" />
               <path d="M165 250 L165 360" />
@@ -187,15 +180,13 @@
               <path d="M240 195 L284 195" />
             </g>
 
-            <!-- PCB Antenna -->
-            <g class="hotspot" data-name="2.4GHZ PCB ANTENNA" data-detail="BLE 5.0 GATT Service 0xFFE0 / Char 0xFFE1 + Optional Passkey Bonding">
+            <g class="hotspot" tabindex="0" role="button" aria-label="2.4GHz PCB Antenna" data-name="2.4GHZ PCB ANTENNA" data-detail="BLE 5.0 GATT Service 0xFFE0 / Char 0xFFE1 + Optional Passkey Bonding">
               <rect x="130" y="38" width="120" height="44" rx="4" class="pcb-module" />
               <path d="M145 72 L145 48 L162 48 L162 66 L179 66 L179 48 L196 48 L196 66 L213 66 L213 48 L230 48 L230 72" class="antenna-trace" />
               <text x="190" y="95" text-anchor="middle" class="pcb-label">ANT // 2.4GHZ</text>
             </g>
 
-            <!-- ESP32-S3 Shield -->
-            <g class="hotspot" data-name="ESP32-S3 SOC" data-detail="Dual-Core LX7 240MHz · Super Mini (4MB/2MB) &amp; N16R8 (16MB/8MB) · NVS Macros m0..m15">
+            <g class="hotspot" tabindex="0" role="button" aria-label="ESP32-S3 SoC" data-name="ESP32-S3 SOC" data-detail="Dual-Core LX7 240MHz · Super Mini (4MB/2MB) &amp; N16R8 (16MB/8MB) · NVS Macros m0..m15">
               <rect x="125" y="130" width="130" height="130" rx="6" class="pcb-chip" />
               <rect x="135" y="140" width="110" height="110" rx="3" class="pcb-chip-inner" />
               <text x="190" y="188" text-anchor="middle" class="pcb-chip-title">ESP32-S3</text>
@@ -203,8 +194,7 @@
               <circle cx="145" cy="150" r="3" class="pin-one" />
             </g>
 
-            <!-- BOOT & RST Buttons -->
-            <g class="hotspot" data-name="BOOT / RST SWITCHES" data-detail="Hold BOOT + tap RST (or plug USB-C) to enter ROM Download Mode">
+            <g class="hotspot" tabindex="0" role="button" aria-label="BOOT and RST Switches" data-name="BOOT / RST SWITCHES" data-detail="Hold BOOT + tap RST (or plug USB-C) to enter ROM Download Mode">
               <rect x="122" y="310" width="38" height="24" rx="3" class="pcb-btn" />
               <circle cx="141" cy="322" r="5" class="pcb-btn-cap" />
               <text x="141" y="348" text-anchor="middle" class="pcb-label">BOOT</text>
@@ -214,95 +204,93 @@
               <text x="239" y="348" text-anchor="middle" class="pcb-label">RST</text>
             </g>
 
-            <!-- Native USB-C Port -->
-            <g class="hotspot" data-name="NATIVE USB-C OTG" data-detail="Composite USB HID (Keyboard + Mouse + Consumer) + USB CDC Serial (GPIO19/20)">
+            <g class="hotspot" tabindex="0" role="button" aria-label="Native USB-C OTG Port" data-name="NATIVE USB-C OTG" data-detail="Composite USB HID (Keyboard + Mouse + Consumer) + USB CDC Serial (GPIO19/20)">
               <rect x="155" y="392" width="70" height="44" rx="6" class="pcb-usb" />
               <rect x="167" y="404" width="46" height="16" rx="8" class="pcb-usb-inner" />
               <text x="190" y="382" text-anchor="middle" class="pcb-label accent-text">USB-C OTG</text>
             </g>
           </svg>
 
-          <div class="pcb-footer mono" id="hotspotDetail">
-            Select or hover a hardware block to inspect signal path.
+          <div class="pcb-footer mono" id="hotspotDetail" aria-live="polite">
+            Hover or focus a hardware block to inspect signal path.
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 3-STEP FLASHING PROTOCOL -->
+    <!-- DEPLOYMENT PROTOCOL -->
     <section class="section container">
       <div class="section-head">
         <span class="mono section-index">01 // DEPLOYMENT PROTOCOL</span>
-        <h2>Three steps to bare-metal ready.</h2>
+        <h2>Bare-metal flashing workflow.</h2>
       </div>
 
-      <div class="steps-grid">
-        <article class="step-card">
-          <span class="corner tl">+</span>
+      <ol class="steps-grid">
+        <li class="step-card">
           <div class="step-num mono">STEP 01</div>
           <h3>Enter Bootloader</h3>
           <p>
-            Use the <strong>Native USB OTG</strong> port on your ESP32-S3. Hold the <code>BOOT</code> button, plug in the USB-C cable (or tap <code>RST</code>), then release <code>BOOT</code>.
+            Connect the <strong>Native USB OTG</strong> port on your ESP32-S3. Hold <code>BOOT</code>, plug in USB-C (or tap <code>RST</code>), then release <code>BOOT</code>.
           </p>
           <div class="step-meta mono">PORT: USB JTAG / SERIAL</div>
-        </article>
+        </li>
 
-        <article class="step-card">
-          <span class="corner tl">+</span>
+        <li class="step-card">
           <div class="step-num mono">STEP 02</div>
           <h3>Flash via Web Serial</h3>
           <p>
-            Select <strong>Super Mini</strong> or <strong>N16R8</strong> above, click <strong>Connect &amp; Flash</strong>, choose your ESP32-S3 serial port, and let ESP Web Tools write the merged factory image.
+            Select <strong>Super Mini</strong> or <strong>N16R8</strong> above, click <strong>Connect &amp; Flash</strong>, choose your serial port, and write the merged factory image.
           </p>
           <div class="step-meta mono">OFFSET: 0x0000 // FACTORY BIN</div>
-        </article>
+        </li>
 
-        <article class="step-card">
-          <span class="corner tl">+</span>
+        <li class="step-card">
           <div class="step-num mono">STEP 03</div>
           <h3>Reset &amp; Control</h3>
           <p>
-            Press <code>RST</code> after verification completes. RubberOrca enumerates as a wired USB HID device and advertises BLE <code>0xFFE0</code> for the Python SDK, CLI, MCP, and RubberOtter clients.
+            Press <code>RST</code> after verification finishes. RubberOrca enumerates as a wired USB HID peripheral and advertises BLE <code>0xFFE0</code>.
           </p>
           <div class="step-meta mono">MODE: HID + BLE READY</div>
-        </article>
-      </div>
+        </li>
+      </ol>
     </section>
 
-    <!-- BENTO HARDWARE SPECS -->
+    <!-- HARDWARE ARCHITECTURE -->
     <section class="section container" id="architecture">
       <div class="section-head">
         <span class="mono section-index">02 // HARDWARE ARCHITECTURE</span>
         <h2>Engineered without bridge bottlenecks.</h2>
       </div>
 
-      <div class="bento-grid">
-        <div class="bento-card span-2">
-          <span class="mono card-kicker">USB STACK</span>
-          <h3>Native USB-OTG Composite HID</h3>
-          <p>
-            ESP32-S3 handles USB directly in silicon via TinyUSB. Low-latency Keyboard, Mouse, and Consumer Control descriptors plus UTF-8 Turkish Q and US layouts across macOS, Windows, and Linux.
-          </p>
-        </div>
+      <div class="specs-container">
+        <div class="bento-grid">
+          <article class="bento-card span-2">
+            <span class="mono card-kicker">USB STACK</span>
+            <h3>Native USB-OTG Composite HID</h3>
+            <p>
+              ESP32-S3 handles USB directly in silicon via TinyUSB. Low-latency Keyboard, Mouse, and Consumer Control descriptors plus UTF-8 Turkish Q and US layouts across macOS, Windows, and Linux.
+            </p>
+          </article>
 
-        <div class="bento-card">
-          <span class="mono card-kicker">STORAGE &amp; RAM</span>
-          <div class="big-stat mono">16<span class="unit">SLOTS</span></div>
-          <p>Wear-leveled ESP32 NVS stores 16 macro chains (<code>m0..m15</code>), BLE name, passkey, and layout.</p>
-        </div>
+          <article class="bento-card">
+            <span class="mono card-kicker">NVS STORAGE</span>
+            <div class="big-stat mono">16<span class="unit">SLOTS</span></div>
+            <p>Wear-leveled ESP32 NVS stores 16 macro chains (<code>m0..m15</code>), BLE name, passkey, and layout.</p>
+          </article>
 
-        <div class="bento-card">
-          <span class="mono card-kicker">WIRELESS</span>
-          <h3>BLE 5.0 GATT + Hardening</h3>
-          <p>Compatible with RubberOtter <code>0xFFE0/0xFFE1</code> clients, with optional 6-digit static passkey bonding and RGB status LED.</p>
-        </div>
+          <article class="bento-card">
+            <span class="mono card-kicker">WIRELESS</span>
+            <h3>BLE 5.0 GATT + Hardening</h3>
+            <p>Compatible with RubberOtter <code>0xFFE0/0xFFE1</code> clients, with optional 6-digit static passkey bonding and RGB status LED.</p>
+          </article>
 
-        <div class="bento-card span-2">
-          <span class="mono card-kicker">ECOSYSTEM &amp; DELIVERY</span>
-          <h3>SDK, CLI, MCP &amp; Automated Releases</h3>
-          <p>
-            Install <code>pip install rubberorca</code> for Python SDK, CLI, and stdio MCP server (<code>rubberorca-mcp</code>). Every tagged GitHub Release builds both factory binaries and updates this flasher.
-          </p>
+          <article class="bento-card span-2">
+            <span class="mono card-kicker">ECOSYSTEM &amp; DELIVERY</span>
+            <h3>SDK, CLI, MCP &amp; Automated Releases</h3>
+            <p>
+              Install <code>pip install rubberorca</code> for Python SDK, CLI, and stdio MCP server (<code>rubberorca-mcp</code>). Every tagged GitHub Release builds both factory binaries and updates this flasher.
+            </p>
+          </article>
         </div>
       </div>
     </section>
@@ -314,31 +302,32 @@
         <h2>Preview keystroke injection.</h2>
       </div>
 
-      <div class="sim-shell">
-        <div class="sim-controls">
-          <div class="mono sim-label">SELECT MACRO PAYLOAD</div>
-          <div class="sim-presets" id="simPresets">
-            <button class="preset-btn active mono" data-preset="chain">CHAIN_DEPLOY.orca</button>
-            <button class="preset-btn mono" data-preset="trq">TR_Q_LAYOUT.orca</button>
-            <button class="preset-btn mono" data-preset="macro">NVS_MACRO.orca</button>
+      <div class="sim-container">
+        <div class="sim-shell">
+          <div class="sim-controls">
+            <div class="mono sim-label">SELECT MACRO PAYLOAD</div>
+            <div class="sim-presets" id="simPresets" role="tablist" aria-label="Simulator Presets">
+              <button type="button" class="preset-btn active mono" role="tab" aria-selected="true" data-preset="chain">CHAIN_DEPLOY.orca</button>
+              <button type="button" class="preset-btn mono" role="tab" aria-selected="false" data-preset="trq">TR_Q_LAYOUT.orca</button>
+              <button type="button" class="preset-btn mono" role="tab" aria-selected="false" data-preset="macro">NVS_MACRO.orca</button>
+            </div>
+
+            <pre class="sim-code mono" id="simCode" tabindex="0"></pre>
+
+            <button type="button" class="btn btn-primary mono" id="runSimBtn">
+              <span class="btn-indicator" aria-hidden="true"></span>
+              <span>EXECUTE SIMULATION</span>
+            </button>
           </div>
 
-          <pre class="sim-code mono" id="simCode"></pre>
-
-          <button class="btn btn-primary mono" id="runSimBtn">
-            <span class="btn-indicator"></span>
-            <span>EXECUTE SIMULATION</span>
-          </button>
-        </div>
-
-        <div class="sim-terminal">
-          <div class="term-bar mono">
-            <span class="term-dots"><i></i><i></i><i></i></span>
-            <span>VIRTUAL HOST // HID_IN_0</span>
-            <span id="simState" class="accent">IDLE</span>
-          </div>
-          <div class="term-output mono" id="termOutput">
-            <div class="dim">// Waiting for USB-HID trigger...</div>
+          <div class="sim-terminal">
+            <div class="term-bar mono">
+              <span>VIRTUAL HOST // HID_IN_0</span>
+              <span id="simState" class="accent">IDLE</span>
+            </div>
+            <div class="term-output mono" id="termOutput" aria-live="polite">
+              <div class="dim">// Waiting for USB-HID trigger...</div>
+            </div>
           </div>
         </div>
       </div>
@@ -358,13 +347,16 @@
             <button type="button" class="preset-btn mono" role="tab" aria-selected="false" data-usage="mcp">MCP // rubberorca-mcp</button>
             <button type="button" class="preset-btn mono" role="tab" aria-selected="false" data-usage="sdk">PYTHON SDK</button>
           </div>
-          <button type="button" class="copy-btn mono" id="copyUsageBtn">COPY</button>
+          <span class="copy-wrap">
+            <button type="button" class="copy-btn mono" id="copyUsageBtn" command="--copy" commandfor="usageCode">COPY</button>
+            <span class="copy-tip mono" role="status"></span>
+          </span>
         </div>
 
-        <pre class="sim-code mono usage-code" id="usageCode"></pre>
+        <pre class="sim-code mono usage-code" id="usageCode" tabindex="0"></pre>
 
         <div class="usage-meta mono" id="usageMeta">
-          Install once via <code>pip install rubberorca</code> — ships CLI, stdio MCP server, and Python SDK.
+          Install once via <code>pip install rubberorca</code>. Ships CLI, stdio MCP server, and Python SDK.
         </div>
       </div>
     </section>
