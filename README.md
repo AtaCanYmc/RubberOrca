@@ -112,6 +112,7 @@ RubberOrca/
 ├── docs/
 │   ├── README.md               # Documentation index
 │   ├── architecture.md         # Dual-core BLE/HID flow and NVS layout
+│   ├── cli-and-mcp.md          # Python CLI flags and stdio MCP server reference
 │   ├── examples.md             # Python BLE/Serial, Web Bluetooth, and macro examples
 │   ├── hardware.md             # Board specs, USB OTG port, and flashing guide
 │   └── protocol.md             # Wire framing, ACK codes, fallbacks, and bounds
@@ -148,7 +149,7 @@ ESP32 NVS is wear-leveled, power-loss safe, and requires no filesystem image upl
 
 ## Contributing and Security
 
-- Browse full technical references in [docs/README.md](docs/README.md) ([architecture](docs/architecture.md), [hardware](docs/hardware.md), [protocol](docs/protocol.md), [examples](docs/examples.md)).
+- Browse full technical references in [docs/README.md](docs/README.md) ([architecture](docs/architecture.md), [hardware](docs/hardware.md), [protocol](docs/protocol.md), [cli-and-mcp](docs/cli-and-mcp.md), [examples](docs/examples.md)).
 - Read [CONTRIBUTING.md](CONTRIBUTING.md) for branch conventions, Conventional Commits, and local verification steps.
 - Report security vulnerabilities privately using [SECURITY.md](SECURITY.md).
 - Track upcoming milestones in [ROADMAP.md](ROADMAP.md).

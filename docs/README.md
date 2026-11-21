@@ -9,4 +9,5 @@ Technical reference for the RubberOrca ESP32-S3 firmware, hardware targets, and 
 | [architecture.md](architecture.md) | Dual-core BLE/HID data flow, TinyUSB composite device, NVS storage layout, and backend abstraction. |
 | [hardware.md](hardware.md) | ESP32-S3 Super Mini and N16R8 DevKitC specifications, USB OTG port selection, flashing, and optional GPIO wiring. |
 | [protocol.md](protocol.md) | Framed `STX/ETX` wire format, ACK error codes, single-byte fallback map, command syntax, and input bounds. |
+| [cli-and-mcp.md](cli-and-mcp.md) | `rubberorca` CLI flags, subcommands, exit codes, and `rubberorca-mcp` stdio MCP server tool catalog. |
 | [examples.md](examples.md) | Executable Python BLE/Serial, Web Bluetooth, macro chaining, single-byte fallback, and RubberOtter CLI examples. |
