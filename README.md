@@ -105,10 +105,10 @@ RubberOrca/
 ├── assets/
 │   └── logo.png                # Square project emblem
 ├── cli/
-│   ├── README.md               # Python CLI usage and installation
-│   ├── pyproject.toml          # rubberorca package manifest (bleak + pyserial)
-│   ├── rubberorca/             # Protocol framing, BLE/Serial transports, argparse CLI
-│   └── tests/                  # Python unittest suite
+│   ├── README.md               # Python CLI and MCP server usage
+│   ├── pyproject.toml          # rubberorca package (CLI + rubberorca-mcp)
+│   ├── rubberorca/             # Protocol, BLE/Serial transports, CLI, and stdio MCP server
+│   └── tests/                  # Python unittest suite (CLI + MCP)
 ├── docs/
 │   ├── README.md               # Documentation index
 │   ├── architecture.md         # Dual-core BLE/HID flow and NVS layout

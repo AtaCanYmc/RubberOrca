@@ -16,6 +16,7 @@ dependencies = [
 
 [project.scripts]
 rubberorca = "rubberorca.cli:main"
+rubberorca-mcp = "rubberorca.mcp_server:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

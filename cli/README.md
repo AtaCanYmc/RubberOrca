@@ -31,6 +31,25 @@ rubberorca raw-byte 0x32
 rubberorca --port /dev/cu.usbmodem1101 send 'type "ok" && enter'
 ```
 
+## MCP Server
+
+`rubberorca-mcp` exposes RubberOrca tools over stdio JSON-RPC 2.0 with zero extra dependencies (`scan_devices`, `type_text`, `press_key`, `media_control`, `mouse_action`, `jiggler`, `macro_define`, `macro_run`, `send_command`).
+
+Example MCP client configuration (`mcp_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "rubberorca": {
+      "command": "rubberorca-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+Pass `--port /dev/cu.usbmodem1101` or `--address <BLE_ADDR>` in `args` (or set `RUBBERORCA_PORT` / `RUBBERORCA_ADDRESS`) to pin a specific device.
+
 ## Testing
 
 ```bash
