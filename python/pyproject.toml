@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rubberorca"
-version = "0.1.3"
+version = "0.1.4"
 description = "Python SDK, CLI, and stdio MCP server for RubberOrca ESP32-S3 USB HID over BLE 5.0 GATT and USB CDC Serial."
 readme = "README.md"
 license = { text = "Apache-2.0" }
