@@ -12,8 +12,45 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
-          release-type: simple
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  upload-firmware:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PlatformIO
+        run: pip install --upgrade platformio
+
+      - name: Build ESP32-S3 Firmware Binaries
+        run: |
+          pio run -e esp32s3_supermini
+          pio run -e esp32s3_n16r8
+          cp .pio/build/esp32s3_supermini/firmware.factory.bin rubberorca-esp32s3-supermini-factory.bin
+          cp .pio/build/esp32s3_n16r8/firmware.factory.bin rubberorca-esp32s3-n16r8-factory.bin
+
+      - name: Upload Firmware Assets to Release
+        run: |
+          gh release upload "${{ needs.release-please.outputs.tag_name }}" \
+            rubberorca-esp32s3-supermini-factory.bin \
+            rubberorca-esp32s3-n16r8-factory.bin \
+            --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
