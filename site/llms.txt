@@ -7,7 +7,7 @@
 - **Supported Hardware:** ESP32-S3 Super Mini (`lolin_s3_mini`, 4 MB Flash / 2 MB PSRAM) and ESP32-S3 N16R8 DevKitC (`esp32-s3-devkitc1-n16r8`, 16 MB Flash / 8 MB OPI PSRAM).
 - **Host Stealth:** Appears strictly as a wired USB HID device to the target host with no host-side Bluetooth pairing.
 - **Protocol:** RubberOtter v1 framed `STX/ETX` XOR protocol, 6-byte ACK responses, single-byte fallback commands (`0x11`–`0x85`), `&&`/`;` command chaining, 16 NVS macro slots (`m0`–`m15`), optional 6-digit static BLE passkey bonding, and UTF-8 Turkish Q + US keyboard layouts.
-- **Python Ecosystem (`pip install rubberorca`):** Unified Python SDK (`RubberOrca`), CLI (`rubberorca`), and stdio JSON-RPC 2.0 MCP server (`rubberorca-mcp`).
+- **Python Ecosystem (`brew install AtaCanYmc/tap/rubberorca` or `pip install rubberorca`):** Unified Python SDK (`RubberOrca`), CLI (`rubberorca`), and stdio JSON-RPC 2.0 MCP server (`rubberorca-mcp`).
 
 ## Links
 

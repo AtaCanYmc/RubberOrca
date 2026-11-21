@@ -160,7 +160,11 @@ renderPreset(activePreset);
 // 5. CLI / MCP / Python SDK Usage Tabs + Invoker Command Copy Button
 const USAGE_SNIPPETS = {
   cli: {
-    code: `# Install unified package (SDK + CLI + MCP)
+    code: `# Install via Homebrew (macOS / Linux)
+brew tap AtaCanYmc/tap
+brew install rubberorca
+
+# Or via PyPI (SDK + CLI + MCP)
 pip install rubberorca
 
 # Discover BLE 0xFFE0 devices and USB serial ports
@@ -174,7 +178,7 @@ rubberorca ble-passkey 482913
 rubberorca macro define m0 'type "git status" && enter'
 rubberorca macro run m0
 rubberorca jiggler toggle`,
-    meta: "Use --port /dev/cu.usbmodem1101 or --address <BLE_UUID> to target a specific board."
+    meta: "Available via Homebrew (AtaCanYmc/tap/rubberorca) or PyPI. Use --port or --address to target a board."
   },
   mcp: {
     code: `// Add to Claude Desktop, Cursor, or Antigravity mcp_config.json
