@@ -101,3 +101,30 @@ class RubberOrca:
 
     def set_layout(self, layout: str) -> Ack:
         return self.send(f"layout {layout}")
+
+    def script_save(self, name: str, body: str, append: bool = False) -> Ack:
+        verb = "append" if append else "save"
+        return self.send(f"script {verb} {name} {{ {body} }}")
+
+    def script_run(self, name: str) -> Ack:
+        return self.send(f"script run {name}")
+
+    def script_delete(self, name: str) -> Ack:
+        return self.send(f"script del {name}")
+
+    def script_list(self) -> Ack:
+        return self.send("script list")
+
+    def wifi_on(self) -> Ack:
+        return self.send("wifi on")
+
+    def wifi_off(self) -> Ack:
+        return self.send("wifi off")
+
+    def wifi_ap(self, ssid: str, password: str) -> Ack:
+        return self.send(f'wifi ap "{ssid}" "{password}"')
+
+    def set_ota_token(self, token: str) -> Ack:
+        if token.lower() == "off":
+            return self.send("ota token off")
+        return self.send(f'ota token "{token}"')

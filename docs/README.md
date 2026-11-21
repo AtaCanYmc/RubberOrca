@@ -11,3 +11,4 @@ Technical reference for the RubberOrca ESP32-S3 firmware, hardware targets, and 
 | [protocol.md](protocol.md) | Framed `STX/ETX` wire format, ACK error codes, single-byte fallback map, command syntax, and input bounds. |
 | [cli-and-mcp.md](cli-and-mcp.md) | `RubberOrca` Python SDK, `rubberorca` CLI flags/subcommands, `rubberorca-mcp` tool catalog, and PyPI publishing. |
 | [examples.md](examples.md) | Executable Python BLE/Serial, Web Bluetooth, macro chaining, single-byte fallback, and RubberOtter CLI examples. |
+| [adr/README.md](adr/README.md) | Architecture Decision Records (ADRs) documenting BLE GATT vs BLE HID, dual-board setup, hybrid storage, and Wi-Fi OTA security. |

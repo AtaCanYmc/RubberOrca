@@ -20,6 +20,6 @@ Milestones reflect planned engineering work grouped by release target.
 
 ## v2.0.0: Wi-Fi Workstation and Script Storage (N16R8 Focus)
 
-- [ ] LittleFS partition support for multi-kilobyte macro and DuckyScript files.
-- [ ] Optional Wi-Fi SoftAP mode serving an on-device OtterDeck web UI and WebSocket transport.
-- [ ] Authenticated Wi-Fi OTA firmware updates.
+- [x] LittleFS partition support for multi-kilobyte macro and DuckyScript files (`script save|append|run|list|del`).
+- [x] Optional Wi-Fi SoftAP mode serving an on-device OtterDeck web UI (`:80`) and WebSocket transport (`:81`).
+- [x] Authenticated Wi-Fi OTA firmware updates (`POST /api/ota` with constant-time `X-Orca-Token` and A/B rollback).

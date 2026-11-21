@@ -4,6 +4,7 @@
 #include "BleTransport.h"
 #include "CommandExecutor.h"
 #include "PacketParser.h"
+#include "WifiWorkstation.h"
 #include <Arduino.h>
 
 void esp32Backend_init();
@@ -38,6 +39,9 @@ void loop() {
 
   packetParser_process();
   jiggler_poll();
+#ifdef RO_ENABLE_WIFI_WORKSTATION
+  wifiWorkstation_poll();
+#endif
   esp32Backend_updateStatusLed(bleTransport_isConnected(), jiggler_get());
   delay(1);
 }

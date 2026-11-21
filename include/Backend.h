@@ -11,8 +11,20 @@ enum class KeyCode : uint8_t {
   ESC,
   RIGHT_ARROW,
   LEFT_ARROW,
+  UP_ARROW,
+  DOWN_ARROW,
+  F1,
+  F2,
   F3,
+  F4,
   F5,
+  F6,
+  F7,
+  F8,
+  F9,
+  F10,
+  F11,
+  F12,
   LEFT_SHIFT,
   LEFT_CTRL,
   LEFT_ALT,
@@ -62,3 +74,13 @@ void backend_set_layout(uint8_t layoutId);
 uint8_t backend_get_layout();
 void backend_macro_save(uint8_t slot, const char* body);
 void backend_macro_read(uint8_t slot, char* outBuf, size_t outLen);
+
+// LittleFS script storage (v2.0.0)
+bool backend_script_save(const char* name, const char* body, bool append);
+bool backend_script_delete(const char* name);
+void backend_script_list();
+bool backend_script_run(const char* name);
+
+// On-demand Wi-Fi SoftAP Workstation and authenticated OTA (N16R8)
+bool backend_wifi_set(bool enabled, const char* ssid, const char* password);
+bool backend_ota_set_token(const char* token);

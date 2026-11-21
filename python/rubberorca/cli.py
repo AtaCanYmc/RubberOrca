@@ -44,6 +44,28 @@ def build_command_from_args(args: argparse.Namespace) -> str:
         return f"ble passkey {args.passkey}"
     if cmd == "layout":
         return f"layout {args.name}"
+    if cmd == "script":
+        if args.script_cmd == "save":
+            return f"script save {args.name} {{ {args.body} }}"
+        if args.script_cmd == "append":
+            return f"script append {args.name} {{ {args.body} }}"
+        if args.script_cmd == "run":
+            return f"script run {args.name}"
+        if args.script_cmd == "del":
+            return f"script del {args.name}"
+        if args.script_cmd == "list":
+            return "script list"
+    if cmd == "wifi":
+        if args.wifi_cmd == "on":
+            return "wifi on"
+        if args.wifi_cmd == "off":
+            return "wifi off"
+        if args.wifi_cmd == "ap":
+            return f'wifi ap "{args.ssid}" "{args.password}"'
+    if cmd == "ota-token":
+        if args.token.lower() == "off":
+            return "ota token off"
+        return f'ota token "{args.token}"'
     raise ValueError(f"Unsupported command: {cmd}")
 
 
@@ -110,6 +132,31 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_lay = sub.add_parser("layout", help="Set USB HID keyboard layout in NVS")
     p_lay.add_argument("name", choices=["us", "tr_q"])
+
+    p_scr = sub.add_parser("script", help="Manage LittleFS scripts (/scripts/)")
+    scr_sub = p_scr.add_subparsers(dest="script_cmd", required=True)
+    ps_save = scr_sub.add_parser("save", help="Save a script file to LittleFS")
+    ps_save.add_argument("name")
+    ps_save.add_argument("body")
+    ps_app = scr_sub.add_parser("append", help="Append line(s) to a LittleFS script")
+    ps_app.add_argument("name")
+    ps_app.add_argument("body")
+    ps_run = scr_sub.add_parser("run", help="Run a LittleFS DuckyScript/orca file")
+    ps_run.add_argument("name")
+    ps_del = scr_sub.add_parser("del", help="Delete a LittleFS script")
+    ps_del.add_argument("name")
+    scr_sub.add_parser("list", help="List stored LittleFS scripts")
+
+    p_wifi = sub.add_parser("wifi", help="Control N16R8 Wi-Fi SoftAP Workstation")
+    wifi_sub = p_wifi.add_subparsers(dest="wifi_cmd", required=True)
+    wifi_sub.add_parser("on", help="Enable SoftAP Workstation")
+    wifi_sub.add_parser("off", help="Disable SoftAP Workstation")
+    pw_ap = wifi_sub.add_parser("ap", help="Configure WPA2-PSK SoftAP credentials and enable")
+    pw_ap.add_argument("ssid")
+    pw_ap.add_argument("password")
+
+    p_ota = sub.add_parser("ota-token", help="Set authenticated OTA/API token (12+ chars) or 'off'")
+    p_ota.add_argument("token")
 
     p_raw = sub.add_parser("raw-byte", help="Send a single-byte fallback command (e.g. 0x32)")
     p_raw.add_argument("value", help="Hex or decimal byte in 0x10..0x8F")

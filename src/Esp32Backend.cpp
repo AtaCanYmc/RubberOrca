@@ -3,6 +3,8 @@
 #include "Backend.h"
 #include "BleTransport.h"
 #include "Protocol.h"
+#include "ScriptStore.h"
+#include "WifiWorkstation.h"
 #include <Arduino.h>
 #include <Preferences.h>
 #include <USB.h>
@@ -45,8 +47,20 @@ uint8_t mapKeyCode(KeyCode key) {
     case KeyCode::ESC:         return KEY_ESC;
     case KeyCode::RIGHT_ARROW: return KEY_RIGHT_ARROW;
     case KeyCode::LEFT_ARROW:  return KEY_LEFT_ARROW;
+    case KeyCode::UP_ARROW:    return KEY_UP_ARROW;
+    case KeyCode::DOWN_ARROW:  return KEY_DOWN_ARROW;
+    case KeyCode::F1:          return KEY_F1;
+    case KeyCode::F2:          return KEY_F2;
     case KeyCode::F3:          return KEY_F3;
+    case KeyCode::F4:          return KEY_F4;
     case KeyCode::F5:          return KEY_F5;
+    case KeyCode::F6:          return KEY_F6;
+    case KeyCode::F7:          return KEY_F7;
+    case KeyCode::F8:          return KEY_F8;
+    case KeyCode::F9:          return KEY_F9;
+    case KeyCode::F10:         return KEY_F10;
+    case KeyCode::F11:         return KEY_F11;
+    case KeyCode::F12:         return KEY_F12;
     case KeyCode::LEFT_SHIFT:  return KEY_LEFT_SHIFT;
     case KeyCode::LEFT_CTRL:   return KEY_LEFT_CTRL;
     case KeyCode::LEFT_ALT:    return KEY_LEFT_ALT;
@@ -112,6 +126,17 @@ void esp32Backend_init() {
   String bleName = prefs.getString("ble_name", BLE_DEFAULT_NAME);
   uint32_t passkey = prefs.getUInt("ble_passkey", 0);
   bleTransport_init(bleName.c_str(), passkey);
+
+#ifdef RO_ENABLE_LITTLEFS
+  scriptStore_init();
+#endif
+
+#ifdef RO_ENABLE_WIFI_WORKSTATION
+  String wifiSsid = prefs.getString("wifi_ssid", "RubberOrca-AP");
+  String wifiPass = prefs.getString("wifi_pass", "");
+  String otaTok = prefs.getString("ota_token", "");
+  wifiWorkstation_init(wifiSsid.c_str(), wifiPass.c_str(), otaTok.c_str());
+#endif
 }
 
 void esp32Backend_updateStatusLed(bool bleConnected, bool jigglerActive) {
@@ -252,6 +277,61 @@ void backend_macro_read(uint8_t slot, char* outBuf, size_t outLen) {
   String val = prefs.getString(key, "");
   strncpy(outBuf, val.c_str(), outLen - 1);
   outBuf[outLen - 1] = '\0';
+}
+
+bool backend_script_save(const char* name, const char* body, bool append) {
+#ifdef RO_ENABLE_LITTLEFS
+  return scriptStore_save(name, body, append);
+#else
+  (void)name; (void)body; (void)append;
+  return false;
+#endif
+}
+
+bool backend_script_delete(const char* name) {
+#ifdef RO_ENABLE_LITTLEFS
+  return scriptStore_delete(name);
+#else
+  (void)name;
+  return false;
+#endif
+}
+
+void backend_script_list() {
+#ifdef RO_ENABLE_LITTLEFS
+  scriptStore_listText();
+#endif
+}
+
+bool backend_script_run(const char* name) {
+#ifdef RO_ENABLE_LITTLEFS
+  return scriptStore_run(name);
+#else
+  (void)name;
+  return false;
+#endif
+}
+
+bool backend_wifi_set(bool enabled, const char* ssid, const char* password) {
+#ifdef RO_ENABLE_WIFI_WORKSTATION
+  if (ssid && *ssid) prefs.putString("wifi_ssid", ssid);
+  if (password && *password) prefs.putString("wifi_pass", password);
+  return wifiWorkstation_setEnabled(enabled, ssid, password);
+#else
+  (void)enabled; (void)ssid; (void)password;
+  return false;
+#endif
+}
+
+bool backend_ota_set_token(const char* token) {
+#ifdef RO_ENABLE_WIFI_WORKSTATION
+  prefs.putString("ota_token", token ? token : "");
+  wifiWorkstation_setToken(token);
+  return true;
+#else
+  (void)token;
+  return false;
+#endif
 }
 
 #endif  // ARDUINO_ARCH_ESP32

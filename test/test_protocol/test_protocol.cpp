@@ -1,7 +1,9 @@
 #include "Backend.h"
 #include "CommandExecutor.h"
+#include "DuckyRunner.h"
 #include "PacketParser.h"
 #include "Protocol.h"
+#include <map>
 #include <string.h>
 #include <string>
 #include <vector>
@@ -29,6 +31,11 @@ struct MockState {
   uint8_t layout = 0;
   std::vector<std::pair<uint8_t, uint8_t>> hidStrokes;
   std::string macros[MACRO_SLOTS];
+  std::map<std::string, std::string> scripts;
+  bool wifiEnabled = false;
+  std::string wifiSsid;
+  std::string wifiPass;
+  std::string otaToken;
 
   void reset() {
     sentBytes.clear();
@@ -50,6 +57,11 @@ struct MockState {
     layout = 0;
     hidStrokes.clear();
     for (auto& m : macros) m.clear();
+    scripts.clear();
+    wifiEnabled = false;
+    wifiSsid.clear();
+    wifiPass.clear();
+    otaToken.clear();
   }
 } mock;
 
@@ -120,6 +132,44 @@ void backend_macro_read(uint8_t slot, char* outBuf, size_t outLen) {
   if (slot >= MACRO_SLOTS || outLen == 0) return;
   strncpy(outBuf, mock.macros[slot].c_str(), outLen - 1);
   outBuf[outLen - 1] = '\0';
+}
+bool backend_script_save(const char* name, const char* body, bool append) {
+  if (!script_name_is_valid(name)) return false;
+  if (append && mock.scripts.count(name)) mock.scripts[name] += "\n" + std::string(body);
+  else mock.scripts[name] = body;
+  return true;
+}
+bool backend_script_delete(const char* name) {
+  return mock.scripts.erase(name) > 0;
+}
+void backend_script_list() {
+  for (const auto& kv : mock.scripts) mock.sentText += kv.first + "\n";
+}
+bool backend_script_run(const char* name) {
+  auto it = mock.scripts.find(name);
+  if (it == mock.scripts.end()) return false;
+  uint32_t defaultDelay = 0;
+  const std::string& content = it->second;
+  size_t pos = 0;
+  while (pos <= content.size()) {
+    size_t nl = content.find('\n', pos);
+    std::string line = (nl == std::string::npos) ? content.substr(pos) : content.substr(pos, nl - pos);
+    if (!ducky_execute_line(line.c_str(), &defaultDelay)) return false;
+    if (nl == std::string::npos) break;
+    pos = nl + 1;
+  }
+  return true;
+}
+bool backend_wifi_set(bool enabled, const char* ssid, const char* password) {
+  if (ssid && *ssid) mock.wifiSsid = ssid;
+  if (password && *password) mock.wifiPass = password;
+  if (enabled && mock.wifiPass.size() < 8) return false;
+  mock.wifiEnabled = enabled;
+  return true;
+}
+bool backend_ota_set_token(const char* token) {
+  mock.otaToken = token ? token : "";
+  return true;
 }
 
 void setUp() {
@@ -302,6 +352,54 @@ void test_ble_passkey_and_turkish_q_layout() {
   TEST_ASSERT_EQUAL_UINT8(0x14, mock.hidStrokes[3].second);
 }
 
+void test_v2_scripts_ducky_wifi_and_ota() {
+  // Path traversal rejected
+  TEST_ASSERT_FALSE(script_name_is_valid("../evil.orca"));
+  TEST_ASSERT_FALSE(script_name_is_valid("/abs.txt"));
+  TEST_ASSERT_FALSE(script_name_is_valid("bad.sh"));
+  TEST_ASSERT_TRUE(script_name_is_valid("deploy_01.orca"));
+
+  // Constant-time compare
+  TEST_ASSERT_TRUE(constant_time_equals("SecretToken1234", "SecretToken1234"));
+  TEST_ASSERT_FALSE(constant_time_equals("SecretToken1234", "SecretToken1235"));
+  TEST_ASSERT_FALSE(constant_time_equals("short", "longer"));
+
+  // Save, append, run DuckyScript
+  feedFrame(buildFrame(VERSION, 40, "script save demo.orca { REM header }"));
+  assertAck(40, 1, 0);
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 41, "script append demo.orca { DEFAULT_DELAY 25 }"));
+  assertAck(41, 1, 0);
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 42, "script append demo.orca { STRINGLN hello_v2 }"));
+  assertAck(42, 1, 0);
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 43, "script run demo.orca"));
+  assertAck(43, 1, 0);
+  TEST_ASSERT_EQUAL_STRING("hello_v2", mock.typedChars.c_str());
+  TEST_ASSERT_EQUAL_UINT32(25, mock.totalDelayMs);
+  TEST_ASSERT_EQUAL_UINT(1, mock.keysWritten.size());
+
+  // Wi-Fi AP enforces min 8-char WPA2-PSK
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 44, "wifi ap \"OrcaLab\" \"short\""));
+  assertAck(44, 0, 1);
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 45, "wifi ap \"OrcaLab\" \"OrcaPass2026\""));
+  assertAck(45, 1, 0);
+  TEST_ASSERT_TRUE(mock.wifiEnabled);
+  TEST_ASSERT_EQUAL_STRING("OrcaLab", mock.wifiSsid.c_str());
+
+  // OTA token enforces min 12 chars
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 46, "ota token \"tooShort\""));
+  assertAck(46, 0, 1);
+  mock.sentBytes.clear();
+  feedFrame(buildFrame(VERSION, 47, "ota token \"MyStrongOtaToken1\""));
+  assertAck(47, 1, 0);
+  TEST_ASSERT_EQUAL_STRING("MyStrongOtaToken1", mock.otaToken.c_str());
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_valid_type_frame_and_escapes);
@@ -315,5 +413,6 @@ int main() {
   RUN_TEST(test_press_modifier_and_combo);
   RUN_TEST(test_security_bounds_and_sanitization);
   RUN_TEST(test_ble_passkey_and_turkish_q_layout);
+  RUN_TEST(test_v2_scripts_ducky_wifi_and_ota);
   return UNITY_END();
 }

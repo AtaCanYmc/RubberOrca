@@ -1,5 +1,6 @@
 #include "CommandExecutor.h"
 #include "Backend.h"
+#include "DuckyRunner.h"
 #include "KeyLayout.h"
 #include "Protocol.h"
 #include "Utils.h"
@@ -55,6 +56,11 @@ void sendHelp() {
       "  jiggler on|off|toggle        - toggle mouse jiggler\n"
       "  macro define m0..m15 { ... } - save macro to NVS slot\n"
       "  macro run m0..m15            - run macro slot\n"
+      "  script save|append <n> {..}  - save/append LittleFS script\n"
+      "  script run|del <name>        - run DuckyScript/orca file or delete\n"
+      "  script list                  - list LittleFS scripts\n"
+      "  wifi on|off|ap \"s\" \"p\"       - control N16R8 Wi-Fi SoftAP (WPA2)\n"
+      "  ota token \"<12+>|off\"        - configure authenticated OTA token\n"
       "  Commands may be chained with && or ;\n");
 }
 
@@ -362,6 +368,97 @@ bool execute_single(char* s, uint8_t depth) {
     backend_macro_read(slot, macroBody, sizeof(macroBody));
     if (!macroBody[0]) return false;
     return execute_chain(macroBody, depth + 1);
+  }
+
+  // LittleFS Script Management: script save|append <name> { ... }
+  if (strncmp(s, "script save ", 12) == 0 || strncmp(s, "script append ", 14) == 0) {
+    bool isAppend = (s[7] == 'a');
+    char* p = s + (isAppend ? 14 : 12);
+    while (*p && isspace((unsigned char)*p)) p++;
+    char nameBuf[SCRIPT_NAME_MAX + 8];
+    size_t ni = 0;
+    while (*p && !isspace((unsigned char)*p) && *p != '{' && ni < sizeof(nameBuf) - 1) {
+      nameBuf[ni++] = *p++;
+    }
+    nameBuf[ni] = '\0';
+    if (!script_name_is_valid(nameBuf)) return false;
+    const char* brace = strchr(p, '{');
+    const char* endb = brace ? strrchr(p, '}') : nullptr;
+    if (!brace || !endb || endb <= brace) return false;
+    size_t len = static_cast<size_t>(endb - brace - 1);
+    if (len >= PAYLOAD_MAX) len = PAYLOAD_MAX - 1;
+    static char scriptChunk[PAYLOAD_MAX];
+    memcpy(scriptChunk, brace + 1, len);
+    scriptChunk[len] = '\0';
+    return backend_script_save(nameBuf, trim_inplace(scriptChunk), isAppend);
+  }
+
+  if (strcmp(s, "script list") == 0) {
+    backend_script_list();
+    return true;
+  }
+
+  if (strncmp(s, "script run ", 11) == 0) {
+    char* name = trim_inplace(s + 11);
+    if (!script_name_is_valid(name)) return false;
+    return backend_script_run(name);
+  }
+
+  if (strncmp(s, "script del ", 11) == 0) {
+    char* name = trim_inplace(s + 11);
+    if (!script_name_is_valid(name)) return false;
+    return backend_script_delete(name);
+  }
+
+  // Wi-Fi SoftAP Workstation Control (N16R8)
+  if (strcmp(s, "wifi on") == 0)  return backend_wifi_set(true, nullptr, nullptr);
+  if (strcmp(s, "wifi off") == 0) return backend_wifi_set(false, nullptr, nullptr);
+  if (strncmp(s, "wifi ap ", 8) == 0) {
+    char* p = s + 8;
+    while (*p && isspace((unsigned char)*p)) p++;
+    if (*p != '"') return false;
+    p++;
+    char ssid[33];
+    size_t si = 0;
+    while (*p && *p != '"' && si < sizeof(ssid) - 1) {
+      unsigned char ch = static_cast<unsigned char>(*p++);
+      if (ch < 0x20 || ch > 0x7E) return false;
+      ssid[si++] = static_cast<char>(ch);
+    }
+    if (*p != '"' || si == 0) return false;
+    ssid[si] = '\0';
+    p++;
+    while (*p && isspace((unsigned char)*p)) p++;
+    if (*p != '"') return false;
+    p++;
+    char pass[64];
+    size_t pi = 0;
+    while (*p && *p != '"' && pi < sizeof(pass) - 1) {
+      unsigned char ch = static_cast<unsigned char>(*p++);
+      if (ch < 0x20 || ch > 0x7E) return false;
+      pass[pi++] = static_cast<char>(ch);
+    }
+    if (*p != '"' || pi < 8) return false;  // WPA2-PSK minimum 8 chars
+    pass[pi] = '\0';
+    return backend_wifi_set(true, ssid, pass);
+  }
+
+  // Authenticated OTA Token Configuration (min 12 printable ASCII chars, or "off")
+  if (strncmp(s, "ota token ", 10) == 0) {
+    char* p = trim_inplace(s + 10);
+    if (iequals(p, "off")) return backend_ota_set_token("");
+    if (*p != '"') return false;
+    p++;
+    char tok[65];
+    size_t ti = 0;
+    while (*p && *p != '"' && ti < sizeof(tok) - 1) {
+      unsigned char ch = static_cast<unsigned char>(*p++);
+      if (ch < 0x21 || ch > 0x7E) return false;  // No spaces or control chars
+      tok[ti++] = static_cast<char>(ch);
+    }
+    if (*p != '"' || ti < 12) return false;
+    tok[ti] = '\0';
+    return backend_ota_set_token(tok);
   }
 
   return false;
