@@ -5,7 +5,11 @@
 # RubberOrca
 
 [![CI](https://github.com/AtaCanYmc/RubberOrca/actions/workflows/ci.yml/badge.svg)](https://github.com/AtaCanYmc/RubberOrca/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/AtaCanYmc/RubberOrca?include_prereleases&sort=semver)](https://github.com/AtaCanYmc/RubberOrca/releases)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![MCU](https://img.shields.io/badge/MCU-ESP32--S3-E7352C.svg)](docs/hardware.md)
+[![PlatformIO](https://img.shields.io/badge/PlatformIO-55.03.311-FF7F00.svg)](platformio.ini)
+[![Transport](https://img.shields.io/badge/Transport-BLE_5.0_%2B_USB_HID-0082FC.svg)](docs/protocol.md)
 
 Single-chip ESP32-S3 firmware that exposes a wired USB HID keyboard, mouse, and consumer control interface to a target host while accepting wireless commands over BLE 5.0 GATT.
 
