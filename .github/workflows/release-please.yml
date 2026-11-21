@@ -88,3 +88,68 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: python/dist/
+
+  update-homebrew-tap:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check HOMEBREW_TAP_TOKEN
+        id: check_token
+        env:
+          TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          if [ -z "$TAP_TOKEN" ]; then
+            echo "::warning::HOMEBREW_TAP_TOKEN secret is not set; skipping Homebrew tap bump."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout AtaCanYmc/homebrew-tap
+        if: steps.check_token.outputs.enabled == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: AtaCanYmc/homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: homebrew-tap
+
+      - name: Update Formula/rubberorca.rb url and sha256
+        if: steps.check_token.outputs.enabled == 'true'
+        env:
+          TAG_NAME: ${{ needs.release-please.outputs.tag_name }}
+          FORMULA: homebrew-tap/Formula/rubberorca.rb
+        run: |
+          export TARBALL_URL="https://github.com/AtaCanYmc/RubberOrca/archive/refs/tags/${TAG_NAME}.tar.gz"
+          curl -fsSL "$TARBALL_URL" -o /tmp/rubberorca.tar.gz
+          export SHA256=$(sha256sum /tmp/rubberorca.tar.gz | awk '{print $1}')
+
+          if [ ! -f "$FORMULA" ]; then
+            echo "::error::Formula/rubberorca.rb not found in AtaCanYmc/homebrew-tap. Run /tap-brewer first."
+            exit 1
+          fi
+
+          python3 -c '
+          import os, re, pathlib
+          p = pathlib.Path(os.environ["FORMULA"])
+          text = p.read_text(encoding="utf-8")
+          text = re.sub(r"^  url \".*\"$", f"  url \"{os.environ[\"TARBALL_URL\"]}\"", text, count=1, flags=re.M)
+          text = re.sub(r"^  sha256 \"[0-9a-f]{64}\"$", f"  sha256 \"{os.environ[\"SHA256\"]}\"", text, count=1, flags=re.M)
+          p.write_text(text, encoding="utf-8")
+          '
+
+      - name: Commit and push tap update
+        if: steps.check_token.outputs.enabled == 'true'
+        working-directory: homebrew-tap
+        env:
+          TAG_NAME: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet Formula/rubberorca.rb; then
+            echo "Formula already up to date."
+            exit 0
+          fi
+          git add Formula/rubberorca.rb
+          git commit -m "chore(formula): bump rubberorca to ${TAG_NAME}"
+          git push origin main
