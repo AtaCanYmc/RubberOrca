@@ -1,6 +1,6 @@
 {
   "name": "RubberOrca (ESP32-S3 N16R8)",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "new_install_prompt_erase": true,
   "builds": [
     {
