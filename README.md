@@ -30,17 +30,7 @@ Single-chip ESP32-S3 firmware that exposes a wired USB HID keyboard, mouse, and 
 
 RubberOrca replaces the dual-chip `ATmega32U4` and `HM-10` UART bridge from [RubberOtter](https://github.com/AtaCanYmc/RubberOtter) with a single ESP32-S3 SoC. The target host enumerates a standard wired USB composite device without host-side Bluetooth pairing. Existing clients — including the unified **[RubberDeck Control PWA](https://atacanymc.github.io/RubberDeck/)** ([source](https://github.com/AtaCanYmc/RubberDeck)), Capacitor mobile apps, Python SDK, CLI, and MCP server — connect over BLE GATT `0xFFE0` / `0xFFE1` and USB CDC Serial without modification.
 
-```mermaid
-flowchart LR
-    CLIENTS["RubberOtter Clients\nWeb PWA / Mobile / Python"] <-->|"BLE 5.0 GATT\n0xFFE0 / 0xFFE1"| BLE["BleTransport\nNimBLE Server"]
-    CLIENTS <-->|"USB CDC Serial"| CDC["USB CDC"]
-    BLE --> PARSER["PacketParser\nSTX/ETX + XOR"]
-    CDC --> PARSER
-    PARSER --> EXEC["CommandExecutor\nChaining + Jiggler"]
-    EXEC <--> NVS["ESP32 NVS\nMacros m0..m15 + Name"]
-    EXEC --> HID["TinyUSB HID\nKeyboard + Mouse + Consumer"]
-    HID -->|"USB-C OTG"| HOST["Target Host PC"]
-```
+![RubberOrca Overview Architecture](docs/diagrams/overview-architecture.svg)
 
 ## Quick Start
 

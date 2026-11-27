@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 260" width="920" height="260" role="img" aria-label="RubberOrca Overview Architecture">
+  <style>
+    .bg { fill: #09090b; }
+    .box { fill: #131317; stroke: rgba(255,255,255,0.22); stroke-width: 1.2; }
+    .box-accent { fill: #1b1b20; stroke: #ff4500; stroke-width: 1.5; }
+    .title { fill: #f4f4f5; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; font-weight: 700; }
+    .sub { fill: #9898a3; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 9px; }
+    .hdr { fill: #9898a3; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.1em; }
+    .edge { stroke: rgba(255,255,255,0.45); stroke-width: 1.4; fill: none; }
+    .edge-accent { stroke: #ff4500; stroke-width: 1.6; fill: none; }
+    .lbl { fill: #d4d4d8; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 9px; }
+    .lbl-accent { fill: #ff4500; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 9px; font-weight: 700; }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 z" fill="rgba(255,255,255,0.65)" />
+    </marker>
+    <marker id="arr-both" viewBox="0 0 8 8" refX="1" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 7 1 L 1 4 L 7 7 z" fill="rgba(255,255,255,0.65)" />
+    </marker>
+    <marker id="arr-acc" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 z" fill="#ff4500" />
+    </marker>
+  </defs>
+
+  <rect width="920" height="260" class="bg" />
+  <text x="20" y="26" class="hdr">FIG 00 // RUBBERORCA SINGLE-SOC ARCHITECTURE (BLE 5.0 + USB CDC -&gt; USB HID)</text>
+
+  <!-- Clients -->
+  <rect x="20" y="88" width="136" height="64" rx="6" class="box" />
+  <text x="88" y="114" text-anchor="middle" class="title">RubberOtter Clients</text>
+  <text x="88" y="130" text-anchor="middle" class="sub">PWA / Mobile / Python</text>
+
+  <!-- BLE + CDC -->
+  <rect x="224" y="54" width="120" height="52" rx="6" class="box" />
+  <text x="284" y="76" text-anchor="middle" class="title">BleTransport</text>
+  <text x="284" y="92" text-anchor="middle" class="sub">NimBLE 0xFFE0/0xFFE1</text>
+
+  <rect x="224" y="136" width="120" height="52" rx="6" class="box" />
+  <text x="284" y="158" text-anchor="middle" class="title">USB CDC</text>
+  <text x="284" y="174" text-anchor="middle" class="sub">Serial Stream</text>
+
+  <!-- PacketParser -->
+  <rect x="382" y="94" width="124" height="54" rx="6" class="box" />
+  <text x="444" y="117" text-anchor="middle" class="title">PacketParser</text>
+  <text x="444" y="133" text-anchor="middle" class="sub">STX/ETX + XOR</text>
+
+  <!-- CommandExecutor -->
+  <rect x="540" y="94" width="132" height="54" rx="6" class="box" />
+  <text x="606" y="117" text-anchor="middle" class="title">CommandExecutor</text>
+  <text x="606" y="133" text-anchor="middle" class="sub">Chaining + Jiggler</text>
+
+  <!-- NVS -->
+  <rect x="540" y="182" width="132" height="50" rx="6" class="box" />
+  <text x="606" y="203" text-anchor="middle" class="title">ESP32 NVS</text>
+  <text x="606" y="219" text-anchor="middle" class="sub">Macros m0..m15 + Name</text>
+
+  <!-- TinyUSB HID -->
+  <rect x="706" y="94" width="112" height="54" rx="6" class="box-accent" />
+  <text x="762" y="117" text-anchor="middle" class="title">TinyUSB HID</text>
+  <text x="762" y="133" text-anchor="middle" class="sub">Kbd / Mouse / Cons</text>
+
+  <!-- Target Host -->
+  <rect x="844" y="94" width="60" height="54" rx="6" class="box" />
+  <text x="874" y="117" text-anchor="middle" class="title">Host</text>
+  <text x="874" y="133" text-anchor="middle" class="sub">PC</text>
+
+  <!-- Edges -->
+  <path d="M 162 106 L 190 106 L 190 80 L 218 80" class="edge" marker-start="url(#arr-both)" marker-end="url(#arr)" />
+  <text x="190" y="72" text-anchor="middle" class="lbl">BLE</text>
+
+  <path d="M 162 134 L 190 134 L 190 162 L 218 162" class="edge" marker-start="url(#arr-both)" marker-end="url(#arr)" />
+  <text x="190" y="176" text-anchor="middle" class="lbl">CDC</text>
+
+  <path d="M 344 80 L 363 80 L 363 112 L 376 112" class="edge" marker-end="url(#arr)" />
+  <path d="M 344 162 L 363 162 L 363 130 L 376 130" class="edge" marker-end="url(#arr)" />
+
+  <path d="M 506 121 L 534 121" class="edge" marker-end="url(#arr)" />
+  <path d="M 606 154 L 606 176" class="edge" marker-start="url(#arr-both)" marker-end="url(#arr)" />
+
+  <path d="M 672 121 L 700 121" class="edge-accent" marker-end="url(#arr-acc)" />
+  <path d="M 818 121 L 838 121" class="edge-accent" marker-end="url(#arr-acc)" />
+  <text x="828" y="112" text-anchor="middle" class="lbl-accent">OTG</text>
+</svg>
