@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/AtaCanYmc/RubberOrca/compare/rubber-orca-v0.1.4...rubber-orca-v0.1.5) (2026-11-27)
+
+
+### Features
+
+* add link to RubberDeck Control PWA in navigation and update README for client clarification ([cc7e4d7](https://github.com/AtaCanYmc/RubberOrca/commit/cc7e4d7abd7ee03d16130492dfb2dc7cb7f79d7f))
+
 ## [0.1.4](https://github.com/AtaCanYmc/RubberOrca/compare/rubber-orca-v0.1.3...rubber-orca-v0.1.4) (2026-11-21)
 
 

@@ -15,7 +15,7 @@ from .protocol import (
 
 from .sdk import RubberOrca
 
-__version__ = "0.1.4"  # x-release-please-version
+__version__ = "0.1.5"  # x-release-please-version
 __all__ = [
     "ACK_LEN",
     "Ack",
