@@ -4,15 +4,7 @@
 
 The `python/` package ships a Python SDK (`RubberOrca`) and two console entry points sharing `rubberorca.protocol` and `rubberorca.transport`: `rubberorca` for terminal automation and `rubberorca-mcp` for AI agent tool execution over stdio JSON-RPC 2.0.
 
-```mermaid
-flowchart LR
-    USER["Terminal / Script"] --> CLI["rubberorca CLI"]
-    AGENT["AI Host\nClaude / Cursor / Antigravity"] <-->|"stdio JSON-RPC 2.0"| MCP["rubberorca-mcp"]
-    CLI --> TRANS["rubberorca.transport\nBLE 0xFFE0 or USB CDC"]
-    MCP --> TRANS
-    TRANS -->|"STX/ETX + XOR"| ESP["RubberOrca ESP32-S3"]
-    ESP -->|"Wired USB HID"| HOST["Target Host PC"]
-```
+![RubberOrca CLI and MCP Architecture](diagrams/cli-mcp-flow.svg)
 
 ## Installation
 

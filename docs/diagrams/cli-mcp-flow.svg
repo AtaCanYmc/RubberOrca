@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 240" width="880" height="240" role="img" aria-label="RubberOrca CLI and MCP Architecture">
+  <style>
+    .bg { fill: #09090b; }
+    .box { fill: #131317; stroke: rgba(255,255,255,0.22); stroke-width: 1.2; }
+    .box-accent { fill: #1b1b20; stroke: #ff4500; stroke-width: 1.5; }
+    .title { fill: #f4f4f5; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; font-weight: 700; }
+    .sub { fill: #9898a3; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 9px; }
+    .hdr { fill: #9898a3; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.1em; }
+    .edge { stroke: rgba(255,255,255,0.45); stroke-width: 1.4; fill: none; }
+    .edge-accent { stroke: #ff4500; stroke-width: 1.6; fill: none; }
+    .lbl { fill: #d4d4d8; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 9px; }
+    .lbl-accent { fill: #ff4500; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 9px; font-weight: 700; }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 z" fill="rgba(255,255,255,0.65)" />
+    </marker>
+    <marker id="arr-both" viewBox="0 0 8 8" refX="1" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 7 1 L 1 4 L 7 7 z" fill="rgba(255,255,255,0.65)" />
+    </marker>
+    <marker id="arr-acc" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 z" fill="#ff4500" />
+    </marker>
+  </defs>
+
+  <rect width="880" height="240" class="bg" />
+  <text x="24" y="26" class="hdr">FIG 01 // PYTHON SDK, CLI &amp; MCP TRANSPORT TOPOLOGY</text>
+
+  <!-- Row 1: User -> CLI -->
+  <rect x="24" y="54" width="144" height="52" rx="6" class="box" />
+  <text x="96" y="76" text-anchor="middle" class="title">Terminal / Script</text>
+  <text x="96" y="92" text-anchor="middle" class="sub">Shell Automation</text>
+
+  <rect x="218" y="54" width="148" height="52" rx="6" class="box" />
+  <text x="292" y="76" text-anchor="middle" class="title">rubberorca CLI</text>
+  <text x="292" y="92" text-anchor="middle" class="sub">Console Entry Point</text>
+
+  <!-- Row 2: AI Host <-> MCP -->
+  <rect x="24" y="146" width="144" height="56" rx="6" class="box" />
+  <text x="96" y="168" text-anchor="middle" class="title">AI Host</text>
+  <text x="96" y="184" text-anchor="middle" class="sub">Claude / Cursor / AGY</text>
+
+  <rect x="218" y="146" width="148" height="56" rx="6" class="box" />
+  <text x="292" y="168" text-anchor="middle" class="title">rubberorca-mcp</text>
+  <text x="292" y="184" text-anchor="middle" class="sub">stdio JSON-RPC 2.0</text>
+
+  <!-- Shared Transport -->
+  <rect x="424" y="98" width="152" height="60" rx="6" class="box" />
+  <text x="500" y="122" text-anchor="middle" class="title">rubberorca.transport</text>
+  <text x="500" y="138" text-anchor="middle" class="sub">BLE 0xFFE0 or USB CDC</text>
+
+  <!-- ESP32-S3 -->
+  <rect x="636" y="98" width="110" height="60" rx="6" class="box-accent" />
+  <text x="691" y="122" text-anchor="middle" class="title">RubberOrca</text>
+  <text x="691" y="138" text-anchor="middle" class="sub">ESP32-S3 SoC</text>
+
+  <!-- Target Host -->
+  <rect x="782" y="98" width="76" height="60" rx="6" class="box" />
+  <text x="820" y="122" text-anchor="middle" class="title">Host PC</text>
+  <text x="820" y="138" text-anchor="middle" class="sub">USB HID</text>
+
+  <!-- Edges -->
+  <path d="M 168 80 L 212 80" class="edge" marker-end="url(#arr)" />
+  <path d="M 174 174 L 212 174" class="edge" marker-start="url(#arr-both)" marker-end="url(#arr)" />
+  <text x="193" y="166" text-anchor="middle" class="lbl">RPC</text>
+
+  <path d="M 366 80 L 395 80 L 395 118 L 418 118" class="edge" marker-end="url(#arr)" />
+  <path d="M 366 174 L 395 174 L 395 138 L 418 138" class="edge" marker-end="url(#arr)" />
+
+  <path d="M 576 128 L 630 128" class="edge-accent" marker-end="url(#arr-acc)" />
+  <text x="603" y="118" text-anchor="middle" class="lbl-accent">STX/ETX</text>
+
+  <path d="M 746 128 L 776 128" class="edge-accent" marker-end="url(#arr-acc)" />
+  <text x="761" y="118" text-anchor="middle" class="lbl-accent">HID</text>
+</svg>

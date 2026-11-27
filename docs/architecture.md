@@ -6,25 +6,7 @@ RubberOrca consolidates the two-chip `ATmega32U4` plus `HM-10` UART bridge from 
 
 ## System Data Flow
 
-```mermaid
-sequenceDiagram
-    participant Client as RubberOtter Client
-    participant BLE as BleTransport (Core 0 NimBLE)
-    participant Loop as main.cpp / PacketParser (Core 1)
-    participant Exec as CommandExecutor
-    participant HID as TinyUSB HID
-    participant Host as Target Host PC
-
-    Client->>BLE: Write GATT 0xFFE1 (STX..ETX)
-    BLE->>BLE: Push bytes into rxBuf under portMUX_TYPE
-    Loop->>BLE: bleTransport_read()
-    Loop->>Loop: Verify VERSION, LEN, XOR checksum
-    Loop->>Exec: execute_command(payload, seq)
-    Exec->>HID: Keyboard / Mouse / Consumer report
-    HID->>Host: Wired USB HID packet
-    Exec->>BLE: sendAck(seq, ok, code) via 0xFFE1 Notify
-    BLE-->>Client: 6-byte ACK frame
-```
+![RubberOrca System Data Flow](diagrams/architecture-data-flow.svg)
 
 ## Concurrency and Thread Safety
 
