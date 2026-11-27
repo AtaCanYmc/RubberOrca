@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 460" width="380" height="460" role="img" aria-label="ESP32-S3 RubberOrca Board Diagram">
+  <style>
+    .bg { fill: #09090b; }
+    .pcb-board { fill: #131317; stroke: rgba(255,255,255,0.24); stroke-width: 1.5; }
+    .pcb-hole { fill: #09090b; stroke: rgba(255,255,255,0.22); stroke-width: 1.2; }
+    .pcb-pins { fill: #1c1c22; stroke: rgba(255,255,255,0.16); stroke-width: 1; }
+    .pcb-traces { fill: none; stroke: rgba(255,255,255,0.18); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+    .pcb-module { fill: #1b1b20; stroke: rgba(255,255,255,0.24); stroke-width: 1.2; }
+    .antenna-trace { fill: none; stroke: #ff4500; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .pcb-chip { fill: #1b1b20; stroke: rgba(255,255,255,0.28); stroke-width: 1.4; }
+    .pcb-chip-inner { fill: #151519; stroke: rgba(255,255,255,0.12); stroke-width: 1; }
+    .pcb-chip-title { fill: #f4f4f5; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; }
+    .pcb-chip-sub { fill: #9898a3; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 9px; letter-spacing: 0.12em; }
+    .pcb-label { fill: #9898a3; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 9px; letter-spacing: 0.1em; }
+    .accent-text { fill: #ff4500; font-weight: 700; }
+    .pin-one { fill: #ff4500; }
+    .pcb-btn { fill: #1b1b20; stroke: rgba(255,255,255,0.24); stroke-width: 1.2; }
+    .pcb-btn-cap { fill: #2c2c34; stroke: rgba(255,255,255,0.22); stroke-width: 1; }
+    .pcb-usb { fill: #1b1b20; stroke: #ff4500; stroke-width: 1.4; }
+    .pcb-usb-inner { fill: #09090b; stroke: rgba(255,255,255,0.22); stroke-width: 1; }
+  </style>
+  <defs>
+    <pattern id="pcb-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.75" />
+    </pattern>
+    <marker id="sig-arrow" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 1 1 L 7 4 L 1 7 z" fill="rgba(255,69,0,0.65)" />
+    </marker>
+  </defs>
+
+  <rect width="380" height="460" class="bg" />
+  <rect x="70" y="30" width="240" height="400" rx="14" class="pcb-board" />
+  <rect x="70" y="30" width="240" height="400" rx="14" fill="url(#pcb-grid)" />
+
+  <g>
+    <circle cx="92" cy="52" r="9" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+    <circle cx="92" cy="52" r="5.5" class="pcb-hole" />
+    <circle cx="288" cy="52" r="9" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+    <circle cx="288" cy="52" r="5.5" class="pcb-hole" />
+    <circle cx="92" cy="408" r="9" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+    <circle cx="92" cy="408" r="5.5" class="pcb-hole" />
+    <circle cx="288" cy="408" r="9" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+    <circle cx="288" cy="408" r="5.5" class="pcb-hole" />
+  </g>
+
+  <g class="pcb-pins">
+    <rect x="78" y="96" width="18" height="264" rx="3" />
+    <rect x="284" y="96" width="18" height="264" rx="3" />
+    <g fill="#2c2c34" stroke="rgba(255,255,255,0.22)" stroke-width="0.75">
+      <circle cx="87" cy="112" r="3.2" /><circle cx="87" cy="135" r="3.2" /><circle cx="87" cy="158" r="3.2" />
+      <circle cx="87" cy="181" r="3.2" /><circle cx="87" cy="204" r="3.2" /><circle cx="87" cy="227" r="3.2" />
+      <circle cx="87" cy="250" r="3.2" /><circle cx="87" cy="273" r="3.2" /><circle cx="87" cy="296" r="3.2" />
+      <circle cx="87" cy="319" r="3.2" /><circle cx="87" cy="342" r="3.2" />
+      <circle cx="293" cy="112" r="3.2" /><circle cx="293" cy="135" r="3.2" /><circle cx="293" cy="158" r="3.2" />
+      <circle cx="293" cy="181" r="3.2" /><circle cx="293" cy="204" r="3.2" /><circle cx="293" cy="227" r="3.2" />
+      <circle cx="293" cy="250" r="3.2" /><circle cx="293" cy="273" r="3.2" /><circle cx="293" cy="296" r="3.2" />
+      <circle cx="293" cy="319" r="3.2" /><circle cx="293" cy="342" r="3.2" />
+    </g>
+  </g>
+
+  <g class="pcb-traces">
+    <path d="M190 128 L190 86" marker-end="url(#sig-arrow)" />
+    <path d="M190 262 L190 390" marker-end="url(#sig-arrow)" />
+    <path d="M165 262 L165 288 L141 288 L141 308" />
+    <path d="M215 262 L215 288 L239 288 L239 308" />
+    <path d="M125 181 L96 181" />
+    <path d="M125 204 L96 204" />
+    <path d="M255 181 L284 181" />
+    <path d="M255 204 L284 204" />
+  </g>
+
+  <g>
+    <rect x="130" y="38" width="120" height="44" rx="4" class="pcb-module" />
+    <path d="M145 72 L145 48 L162 48 L162 66 L179 66 L179 48 L196 48 L196 66 L213 66 L213 48 L230 48 L230 72" class="antenna-trace" />
+    <text x="190" y="95" text-anchor="middle" class="pcb-label">ANT // 2.4GHZ</text>
+  </g>
+
+  <g>
+    <rect x="125" y="130" width="130" height="130" rx="6" class="pcb-chip" />
+    <rect x="135" y="140" width="110" height="110" rx="3" class="pcb-chip-inner" />
+    <text x="190" y="186" text-anchor="middle" class="pcb-chip-title">ESP32-S3</text>
+    <text x="190" y="204" text-anchor="middle" class="pcb-chip-sub">TINYUSB // ORCA</text>
+    <text x="190" y="224" text-anchor="middle" class="pcb-label">NVS m0..m15</text>
+    <circle cx="145" cy="150" r="3" class="pin-one" />
+  </g>
+
+  <g>
+    <rect x="122" y="310" width="38" height="24" rx="3" class="pcb-btn" />
+    <circle cx="141" cy="322" r="5" class="pcb-btn-cap" />
+    <text x="141" y="348" text-anchor="middle" class="pcb-label">BOOT</text>
+
+    <rect x="220" y="310" width="38" height="24" rx="3" class="pcb-btn" />
+    <circle cx="239" cy="322" r="5" class="pcb-btn-cap" />
+    <text x="239" y="348" text-anchor="middle" class="pcb-label">RST</text>
+  </g>
+
+  <g>
+    <rect x="155" y="392" width="70" height="44" rx="6" class="pcb-usb" />
+    <rect x="167" y="404" width="46" height="16" rx="8" class="pcb-usb-inner" />
+    <text x="190" y="382" text-anchor="middle" class="pcb-label accent-text">USB-C OTG</text>
+  </g>
+</svg>
